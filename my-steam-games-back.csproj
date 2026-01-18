@@ -1,10 +1,11 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>my_steam_games_back</RootNamespace>
+    <UserSecretsId>f94c4795-3f01-40d4-92cd-1020510c7519</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>

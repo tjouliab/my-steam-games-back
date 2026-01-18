@@ -6,4 +6,4 @@ obj/
 *.pdb
 
 # Environment
-*.env
+secrets.json
