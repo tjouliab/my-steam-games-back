@@ -1,0 +1,6 @@
+@my_steam_games_back_HostAddress = http://localhost:5014
+
+GET {{my_steam_games_back_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
