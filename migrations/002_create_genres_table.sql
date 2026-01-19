@@ -1,0 +1,4 @@
+CREATE TABLE genres (
+  id INTEGER NOT NULL PRIMARY KEY,
+  label TEXT NOT NULL
+);
