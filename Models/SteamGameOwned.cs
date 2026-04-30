@@ -2,22 +2,22 @@ using System.Text.Json.Serialization;
 
 namespace MySteamGamesBack.Models;
 
-public class SteamOwnedGamesResponse
+public class SteamGamesOwnedResponse
 {
   [JsonPropertyName("response")]
-  public required SteamOwnedGamesResponseBody Response { get; set; }
+  public required SteamGamesOwnedResponseBody Response { get; set; }
 }
 
-public class SteamOwnedGamesResponseBody
+public class SteamGamesOwnedResponseBody
 {
   [JsonPropertyName("game_count")]
   public int GameCount { get; set; }
 
   [JsonPropertyName("games")]
-  public List<SteamOwnedGame> Games { get; set; } = [];
+  public List<SteamGameOwned> Games { get; set; } = [];
 }
 
-public class SteamOwnedGame
+public class SteamGameOwned
 {
   [JsonPropertyName("appid")]
   public int AppId { get; set; }

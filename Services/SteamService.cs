@@ -23,24 +23,24 @@ public class SteamService(ILogger<SteamService> logger, IOptions<SteamOptions> o
 
   public async Task<List<SteamGameEnriched>> PopulateGamesTable()
   {
-    List<SteamOwnedGame> familyGames = await GetFamilyGamesDistinct();
+    List<SteamGameOwned> familyGames = await GetFamilyGamesDistinct();
 
     return await EnrichPlayerGames(familyGames);
   }
 
-  private async Task<List<SteamOwnedGame>> GetFamilyGamesDistinct()
+  private async Task<List<SteamGameOwned>> GetFamilyGamesDistinct()
   {
     var tasks = _familyPlayersId.Select(GetPlayerGames);
     var results = await Task.WhenAll(tasks);
     return [.. results.SelectMany(games => games).DistinctBy(game => game.AppId)];
   }
 
-  private async Task<List<SteamOwnedGame>> GetPlayerGames(string playerId)
+  private async Task<List<SteamGameOwned>> GetPlayerGames(string playerId)
   {
     using HttpResponseMessage ownedGamesJson = await client.GetAsync($"https://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key={_steamApiKey}&steamid={playerId}&include_appinfo=true&include_played_free_games=true");
     ownedGamesJson.EnsureSuccessStatusCode();
 
-    var ownedGames = await ownedGamesJson.Content.ReadFromJsonAsync<SteamOwnedGamesResponse>();
+    var ownedGames = await ownedGamesJson.Content.ReadFromJsonAsync<SteamGamesOwnedResponse>();
 
     return ownedGames?.Response?.Games ?? [];
   }
@@ -65,7 +65,7 @@ public class SteamService(ILogger<SteamService> logger, IOptions<SteamOptions> o
     return gameReviewsContent;
   }
 
-  private static async Task<List<SteamGameEnriched>> EnrichPlayerGames(List<SteamOwnedGame> games)
+  private static async Task<List<SteamGameEnriched>> EnrichPlayerGames(List<SteamGameOwned> games)
   {
     var enrichedGames = new List<SteamGameEnriched>();
 
