@@ -1,3 +1,5 @@
+using MySteamGamesBack.Dto;
+
 namespace MySteamGamesBack.Models;
 
 public record SteamGameEnriched
@@ -13,9 +15,9 @@ public record SteamGameEnriched
   public required int PlaytimeDeckForever { get; set; }
   public required long RtimeLastPlayed { get; set; }
   public required int PlaytimeDisconnected { get; set; }
-  public required ReleaseDate ReleaseDate { get; set; }
-  public required Metacritic Metacritic { get; set; }
-  public required List<Genre> Genres { get; set; }
-  public required PriceOverview PriceOverview { get; set; }
-  public required ReviewsSummary ReviewsSummary { get; set; }
+  public required ReleaseDateDto ReleaseDate { get; set; }
+  public required MetacriticDto Metacritic { get; set; }
+  public required List<GenreDto> Genres { get; set; }
+  public required PriceOverviewDto PriceOverview { get; set; }
+  public required ReviewsSummaryDto ReviewsSummary { get; set; }
 }

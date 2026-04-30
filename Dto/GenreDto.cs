@@ -1,8 +1,8 @@
 using System.Text.Json.Serialization;
 
-namespace MySteamGamesBack.Models;
+namespace MySteamGamesBack.Dto;
 
-public class Genre
+public class GenreDto
 {
   [JsonPropertyName("id")]
   public required string Id { get; set; }

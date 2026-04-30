@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace MySteamGamesBack.Models;
+namespace MySteamGamesBack.Dto;
 
 public class SteamGamesOwnedResponse
 {
@@ -14,10 +14,10 @@ public class SteamGamesOwnedResponseBody
   public int GameCount { get; set; }
 
   [JsonPropertyName("games")]
-  public List<SteamGameOwned> Games { get; set; } = [];
+  public List<SteamGameOwnedDto> Games { get; set; } = [];
 }
 
-public class SteamGameOwned
+public class SteamGameOwnedDto
 {
   [JsonPropertyName("appid")]
   public int AppId { get; set; }

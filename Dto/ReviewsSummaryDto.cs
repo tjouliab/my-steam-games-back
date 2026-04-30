@@ -1,8 +1,8 @@
 using System.Text.Json.Serialization;
 
-namespace MySteamGamesBack.Models;
+namespace MySteamGamesBack.Dto;
 
-public class ReviewsSummary
+public class ReviewsSummaryDto
 {
   [JsonPropertyName("total_positive")]
   public required int TotalPositive { get; set; }

@@ -1,8 +1,8 @@
 using System.Text.Json.Serialization;
 
-namespace MySteamGamesBack.Models;
+namespace MySteamGamesBack.Dto;
 
-public class PriceOverview
+public class PriceOverviewDto
 {
   [JsonPropertyName("initial")]
   public required int Initial { get; set; }

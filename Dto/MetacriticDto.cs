@@ -1,8 +1,8 @@
 using System.Text.Json.Serialization;
 
-namespace MySteamGamesBack.Models;
+namespace MySteamGamesBack.Dto;
 
-public class Metacritic
+public class MetacriticDto
 {
   [JsonPropertyName("score")]
   public required int Score { get; set; }

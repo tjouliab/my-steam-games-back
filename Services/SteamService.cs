@@ -1,7 +1,7 @@
 using System.Net.Http.Headers;
-using System.Text.Json;
 using Microsoft.Extensions.Options;
 using MySteamGamesBack.Models;
+using MySteamGamesBack.Dto;
 
 namespace MySteamGamesBack.Services;
 
@@ -23,19 +23,19 @@ public class SteamService(ILogger<SteamService> logger, IOptions<SteamOptions> o
 
   public async Task<List<SteamGameEnriched>> PopulateGamesTable()
   {
-    List<SteamGameOwned> familyGames = await GetFamilyGamesDistinct();
+    List<SteamGameOwnedDto> familyGames = await GetFamilyGamesDistinct();
 
     return await EnrichPlayerGames(familyGames);
   }
 
-  private async Task<List<SteamGameOwned>> GetFamilyGamesDistinct()
+  private async Task<List<SteamGameOwnedDto>> GetFamilyGamesDistinct()
   {
     var tasks = _familyPlayersId.Select(GetPlayerGames);
     var results = await Task.WhenAll(tasks);
     return [.. results.SelectMany(games => games).DistinctBy(game => game.AppId)];
   }
 
-  private async Task<List<SteamGameOwned>> GetPlayerGames(string playerId)
+  private async Task<List<SteamGameOwnedDto>> GetPlayerGames(string playerId)
   {
     using HttpResponseMessage ownedGamesJson = await client.GetAsync($"https://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key={_steamApiKey}&steamid={playerId}&include_appinfo=true&include_played_free_games=true");
     ownedGamesJson.EnsureSuccessStatusCode();
@@ -45,7 +45,7 @@ public class SteamService(ILogger<SteamService> logger, IOptions<SteamOptions> o
     return ownedGames?.Response?.Games ?? [];
   }
 
-  private static async Task<SteamGameDetails?> GetGameDetails(int AppId)
+  private static async Task<SteamGameDetailsDto?> GetGameDetails(int AppId)
   {
     using HttpResponseMessage gameDetailsJson = await client.GetAsync($"https://store.steampowered.com/api/appdetails?appids={AppId}&cc=fr&l=french");
     gameDetailsJson.EnsureSuccessStatusCode();
@@ -55,17 +55,17 @@ public class SteamService(ILogger<SteamService> logger, IOptions<SteamOptions> o
     return gameDetailsContent?.Values.First().Data;
   }
 
-  private static async Task<SteamGameReviews?> GetGameReviews(int AppId)
+  private static async Task<SteamGameReviewsDto?> GetGameReviews(int AppId)
   {
     using HttpResponseMessage gameReviewsJson = await client.GetAsync($"https://store.steampowered.com/appreviews/{AppId}?language=all&purchase_type=all&json=1&num_per_page=0");
     gameReviewsJson.EnsureSuccessStatusCode();
 
-    var gameReviewsContent = await gameReviewsJson.Content.ReadFromJsonAsync<SteamGameReviews>();
+    var gameReviewsContent = await gameReviewsJson.Content.ReadFromJsonAsync<SteamGameReviewsDto>();
 
     return gameReviewsContent;
   }
 
-  private static async Task<List<SteamGameEnriched>> EnrichPlayerGames(List<SteamGameOwned> games)
+  private static async Task<List<SteamGameEnriched>> EnrichPlayerGames(List<SteamGameOwnedDto> games)
   {
     var enrichedGames = new List<SteamGameEnriched>();
 
