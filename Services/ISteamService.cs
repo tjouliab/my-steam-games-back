@@ -4,5 +4,5 @@ namespace MySteamGamesBack.Services;
 
 public interface ISteamService
 {
-  void PopulateGamesTable();
+  Task<List<SteamGameEnriched>> PopulateGamesTable();
 }

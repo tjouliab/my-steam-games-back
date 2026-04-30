@@ -13,9 +13,9 @@ public class SteamController(ISteamService steamService, ILogger<SteamController
   private readonly ILogger<SteamController> _logger = logger;
 
   [HttpPost("populate-games-table")]
-  public IActionResult PopulateGamesTable()
+  public async Task<ActionResult<List<SteamGameEnriched>>> PopulateGamesTable()
   {
-    _steamService.PopulateGamesTable();
-    return Ok();
+    var games = await _steamService.PopulateGamesTable();
+    return Ok(games);
   }
 }

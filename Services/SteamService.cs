@@ -1,4 +1,5 @@
-using Microsoft.Extensions.Logging;
+using System.Net.Http.Headers;
+using System.Text.Json;
 using Microsoft.Extensions.Options;
 using MySteamGamesBack.Models;
 
@@ -10,9 +11,96 @@ public class SteamService(ILogger<SteamService> logger, IOptions<SteamOptions> o
   private readonly string _steamApiKey = options.Value.ApiKey ?? throw new InvalidOperationException("Steam API key is not configured.");
   private readonly IEnumerable<string> _familyPlayersId = options.Value.FamilyPlayersId ?? throw new InvalidOperationException("Steam Family players not configured.");
 
-  public void PopulateGamesTable()
+  private static readonly HttpClient client = CreateHttpClient();
+
+  private static HttpClient CreateHttpClient()
   {
-    _logger.LogInformation("_steamApiKey: {_steamApiKey}", _steamApiKey);
-    _logger.LogInformation("_familyPlayersId: {_familyPlayersId}", _familyPlayersId);
+    var client = new HttpClient();
+    client.DefaultRequestHeaders.UserAgent.ParseAdd("MySteamGamesBack/1.0");
+    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+    return client;
+  }
+
+  public async Task<List<SteamGameEnriched>> PopulateGamesTable()
+  {
+    List<SteamOwnedGame> familyGames = await GetFamilyGamesDistinct();
+
+    return await EnrichPlayerGames(familyGames);
+  }
+
+  private async Task<List<SteamOwnedGame>> GetFamilyGamesDistinct()
+  {
+    var tasks = _familyPlayersId.Select(GetPlayerGames);
+    var results = await Task.WhenAll(tasks);
+    return [.. results.SelectMany(games => games).DistinctBy(game => game.AppId)];
+  }
+
+  private async Task<List<SteamOwnedGame>> GetPlayerGames(string playerId)
+  {
+    using HttpResponseMessage ownedGamesJson = await client.GetAsync($"https://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key={_steamApiKey}&steamid={playerId}&include_appinfo=true&include_played_free_games=true");
+    ownedGamesJson.EnsureSuccessStatusCode();
+
+    var ownedGames = await ownedGamesJson.Content.ReadFromJsonAsync<SteamOwnedGamesResponse>();
+
+    return ownedGames?.Response?.Games ?? [];
+  }
+
+  private static async Task<SteamGameDetails?> GetGameDetails(int AppId)
+  {
+    using HttpResponseMessage gameDetailsJson = await client.GetAsync($"https://store.steampowered.com/api/appdetails?appids={AppId}&cc=fr&l=french");
+    gameDetailsJson.EnsureSuccessStatusCode();
+
+    var gameDetailsContent = await gameDetailsJson.Content.ReadFromJsonAsync<Dictionary<string, SteamGameDetailsResponse>>();
+
+    return gameDetailsContent?.Values.First().Data;
+  }
+
+  private static async Task<SteamGameReviews?> GetGameReviews(int AppId)
+  {
+    using HttpResponseMessage gameReviewsJson = await client.GetAsync($"https://store.steampowered.com/appreviews/{AppId}?language=all&purchase_type=all&json=1&num_per_page=0");
+    gameReviewsJson.EnsureSuccessStatusCode();
+
+    var gameReviewsContent = await gameReviewsJson.Content.ReadFromJsonAsync<SteamGameReviews>();
+
+    return gameReviewsContent;
+  }
+
+  private static async Task<List<SteamGameEnriched>> EnrichPlayerGames(List<SteamOwnedGame> games)
+  {
+    var enrichedGames = new List<SteamGameEnriched>();
+
+    // Do not use Task.WhenAll on purpose to avoid flooding Steam API
+    foreach (var game in games)
+    {
+      // If not enough informations, just ignore the game
+      var gameDetails = await GetGameDetails(game.AppId);
+      if (gameDetails == null) continue;
+
+      var gameReviews = await GetGameReviews(game.AppId);
+      if (gameReviews == null) continue;
+
+
+      enrichedGames.Add(new SteamGameEnriched
+      {
+        AppId = game.AppId,
+        Name = game.Name,
+        PlaytimeForever = game.PlaytimeForever,
+        ImgIconUrl = game.ImgIconUrl,
+        HasCommunityVisibleStats = game.HasCommunityVisibleStats,
+        PlaytimeWindowsForever = game.PlaytimeWindowsForever,
+        PlaytimeMacForever = game.PlaytimeMacForever,
+        PlaytimeLinuxForever = game.PlaytimeLinuxForever,
+        PlaytimeDeckForever = game.PlaytimeDeckForever,
+        RtimeLastPlayed = game.RtimeLastPlayed,
+        PlaytimeDisconnected = game.PlaytimeDisconnected,
+        ReleaseDate = gameDetails.ReleaseDate,
+        Metacritic = gameDetails.Metacritic,
+        Genres = gameDetails.Genres,
+        PriceOverview = gameDetails.PriceOverview,
+        ReviewsSummary = gameReviews.QuerySummary
+      });
+    }
+
+    return enrichedGames;
   }
 }
