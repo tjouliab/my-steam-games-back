@@ -4,9 +4,9 @@ namespace MySteamGamesBack.Dto;
 
 public class GenreDto
 {
-  [JsonPropertyName("id")]
-  public required string Id { get; set; }
+    [JsonPropertyName("id")]
+    public required string Id { get; set; }
 
-  [JsonPropertyName("description")]
-  public required string Description { get; set; }
+    [JsonPropertyName("description")]
+    public required string Description { get; set; }
 }

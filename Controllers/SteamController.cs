@@ -9,13 +9,13 @@ namespace MySteamGamesBack.Controllers;
 [Route("steam")]
 public class SteamController(ISteamService steamService, ILogger<SteamController> logger) : ControllerBase
 {
-  private readonly ISteamService _steamService = steamService;
-  private readonly ILogger<SteamController> _logger = logger;
+    private readonly ISteamService _steamService = steamService;
+    private readonly ILogger<SteamController> _logger = logger;
 
-  [HttpPost("populate-games-table")]
-  public async Task<ActionResult<List<SteamGameEnriched>>> PopulateGamesTable()
-  {
-    var games = await _steamService.PopulateGamesTable();
-    return Ok(games);
-  }
+    [HttpPost("populate-games-table")]
+    public async Task<ActionResult<List<SteamGameEnriched>>> PopulateGamesTable()
+    {
+        var games = await _steamService.PopulateGamesTable();
+        return Ok(games);
+    }
 }

@@ -4,6 +4,6 @@ namespace MySteamGamesBack.Dto;
 
 public class MetacriticDto
 {
-  [JsonPropertyName("score")]
-  public required int Score { get; set; }
+    [JsonPropertyName("score")]
+    public required int Score { get; set; }
 }
