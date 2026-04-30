@@ -8,13 +8,7 @@ public record SteamGameEnriched
   public required string Name { get; set; }
   public required int PlaytimeForever { get; set; }
   public required string ImgIconUrl { get; set; }
-  public required bool HasCommunityVisibleStats { get; set; }
-  public required int PlaytimeWindowsForever { get; set; }
-  public required int PlaytimeMacForever { get; set; }
-  public required int PlaytimeLinuxForever { get; set; }
-  public required int PlaytimeDeckForever { get; set; }
   public required long RtimeLastPlayed { get; set; }
-  public required int PlaytimeDisconnected { get; set; }
   public required ReleaseDateDto ReleaseDate { get; set; }
   public required MetacriticDto Metacritic { get; set; }
   public required List<GenreDto> Genres { get; set; }

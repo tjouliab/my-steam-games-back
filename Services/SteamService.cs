@@ -1,7 +1,7 @@
 using System.Net.Http.Headers;
 using Microsoft.Extensions.Options;
-using MySteamGamesBack.Models;
 using MySteamGamesBack.Dto;
+using MySteamGamesBack.Models;
 
 namespace MySteamGamesBack.Services;
 
@@ -86,18 +86,12 @@ public class SteamService(ILogger<SteamService> logger, IOptions<SteamOptions> o
         Name = game.Name,
         PlaytimeForever = game.PlaytimeForever,
         ImgIconUrl = game.ImgIconUrl,
-        HasCommunityVisibleStats = game.HasCommunityVisibleStats,
-        PlaytimeWindowsForever = game.PlaytimeWindowsForever,
-        PlaytimeMacForever = game.PlaytimeMacForever,
-        PlaytimeLinuxForever = game.PlaytimeLinuxForever,
-        PlaytimeDeckForever = game.PlaytimeDeckForever,
         RtimeLastPlayed = game.RtimeLastPlayed,
-        PlaytimeDisconnected = game.PlaytimeDisconnected,
         ReleaseDate = gameDetails.ReleaseDate,
         Metacritic = gameDetails.Metacritic,
         Genres = gameDetails.Genres,
         PriceOverview = gameDetails.PriceOverview,
-        ReviewsSummary = gameReviews.QuerySummary
+        ReviewsSummary = gameReviews.ReviewsSummary
       });
     }
 
