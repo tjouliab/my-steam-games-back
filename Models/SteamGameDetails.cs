@@ -25,29 +25,3 @@ public class SteamGameDetails
   [JsonPropertyName("price_overview")]
   public PriceOverview PriceOverview { get; set; } = new PriceOverview { Initial = 0 };
 }
-
-public class ReleaseDate
-{
-  public required string Date { get; set; }
-}
-
-public class Metacritic
-{
-  [JsonPropertyName("score")]
-  public required int Score { get; set; }
-}
-
-public class Genre
-{
-  [JsonPropertyName("id")]
-  public required string Id { get; set; }
-
-  [JsonPropertyName("description")]
-  public required string Description { get; set; }
-}
-
-public class PriceOverview
-{
-  [JsonPropertyName("initial")]
-  public required int Initial { get; set; }
-}
