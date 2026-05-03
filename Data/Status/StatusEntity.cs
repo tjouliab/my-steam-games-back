@@ -1,4 +1,4 @@
-namespace MySteamGamesBack.Data.Entities;
+namespace MySteamGamesBack.Data;
 
 public class StatusEntity
 {

@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using MySteamGamesBack.Data.Entities;
 
 namespace MySteamGamesBack.Data;
 
