@@ -2,7 +2,7 @@ namespace MySteamGamesBack.Data;
 
 public class GenreEntity
 {
-    public required int Id { get; set; }
+    public required int AppId { get; set; }
 
     public required string Description { get; set; }
 

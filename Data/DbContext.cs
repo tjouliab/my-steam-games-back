@@ -26,7 +26,7 @@ public class AppDbContext : DbContext
             .HasForeignKey(g => g.StatusId);
 
         modelBuilder.Entity<GenreEntity>()
-            .HasKey(g => g.Id);
+            .HasKey(g => g.AppId);
 
         modelBuilder.Entity<StatusEntity>().HasData(
             new StatusEntity { Id = 1, Label = "100%" },
