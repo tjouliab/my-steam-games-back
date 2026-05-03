@@ -13,7 +13,7 @@ public record GameEntity
     public required DateTime LastTimePlayed { get; set; }
     public required DateTime ReleaseDate { get; set; }
     public required int InitialPrice { get; set; }
-    public List<GameGenreEntity> GameGenres { get; set; } = [];
+    public List<GenreEntity> Genres { get; set; } = [];
 
     public int? StatusId { get; set; }
     public StatusEntity? Status { get; set; }

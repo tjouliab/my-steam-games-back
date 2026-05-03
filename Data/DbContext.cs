@@ -8,8 +8,6 @@ public class AppDbContext : DbContext
     public DbSet<GenreEntity> Genres => Set<GenreEntity>();
     public DbSet<StatusEntity> Statuses => Set<StatusEntity>();
 
-    public DbSet<GameGenreEntity> GameGenres => Set<GameGenreEntity>();
-
     protected override void OnConfiguring(DbContextOptionsBuilder options)
     {
         options.UseSqlite("Data Source=steam-games.db");
@@ -25,6 +23,21 @@ public class AppDbContext : DbContext
             .WithMany()
             .HasForeignKey(g => g.StatusId);
 
+        // Skip navigation: declare join table GameGenre
+        modelBuilder.Entity<GameEntity>()
+            .HasMany(g => g.Genres)
+            .WithMany(g => g.Games)
+            .UsingEntity<Dictionary<string, object>>(
+                "GameGenre",
+                j => j.HasOne<GenreEntity>()
+                    .WithMany()
+                    .HasForeignKey("GenreId"),
+                j => j.HasOne<GameEntity>()
+                    .WithMany()
+                    .HasForeignKey("GameId"),
+                j => j.HasKey("GameId", "GenreId")
+            );
+
         modelBuilder.Entity<GenreEntity>()
             .HasKey(g => g.AppId);
 
@@ -34,18 +47,5 @@ public class AppDbContext : DbContext
             new StatusEntity { Id = 3, Label = "Unfinished" },
             new StatusEntity { Id = 4, Label = "Abandoned" }
         );
-
-        modelBuilder.Entity<GameGenreEntity>()
-            .HasKey(gg => new { gg.AppId, gg.GenreId });
-
-        modelBuilder.Entity<GameGenreEntity>()
-            .HasOne(gg => gg.Game)
-            .WithMany(g => g.GameGenres)
-            .HasForeignKey(gg => gg.AppId);
-
-        modelBuilder.Entity<GameGenreEntity>()
-            .HasOne(gg => gg.Genre)
-            .WithMany(g => g.GameGenres)
-            .HasForeignKey(gg => gg.GenreId);
     }
 }
