@@ -15,21 +15,40 @@ public class GenreRepository(AppDbContext dbContext) : IGenreRepository
         return genre;
     }
 
-    public async Task<List<GenreEntity>> Get()
+    public async Task<IEnumerable<GenreEntity>> Get()
     {
         return await _dbContext.Genres.ToListAsync();
     }
 
     public async Task Save(GenreEntity entity)
     {
-        _dbContext.Genres.Add(entity);
+        await Save([entity]);
+    }
+
+    public async Task Save(IEnumerable<GenreEntity> entities)
+    {
+        var newEntities = await FilterNew(entities);
+
+        _dbContext.Genres.AddRange(newEntities);
         await _dbContext.SaveChangesAsync();
     }
 
-    public async Task Save(List<GenreEntity> entities)
+    private async Task<IEnumerable<GenreEntity>> FilterNew(IEnumerable<GenreEntity> entities)
     {
-        _dbContext.Genres.AddRange(entities);
-        await _dbContext.SaveChangesAsync();
+        var appIds = entities
+            .Select(e => e.AppId)
+            .Distinct()
+            .ToHashSet();
+
+        var existingGenres = await _dbContext.Genres
+            .Where(g => appIds.Contains(g.AppId))
+            .Select(g => g.AppId)
+            .ToHashSetAsync();
+
+        return entities
+            .DistinctBy(e => e.AppId)
+            .Where(e => !existingGenres.Contains(e.AppId))
+            .ToList();
     }
 }
 

@@ -6,5 +6,5 @@ public class GenreEntity
 
     public required string Description { get; set; }
 
-    public List<GameEntity> Games { get; set; } = [];
+    public IEnumerable<GameEntity> Games { get; set; } = [];
 }

@@ -15,7 +15,7 @@ public class StatusRepository(AppDbContext dbContext) : IStatusRepository
         return status;
     }
 
-    public async Task<List<StatusEntity>> Get()
+    public async Task<IEnumerable<StatusEntity>> Get()
     {
         return await _dbContext.Statuses.ToListAsync();
     }
