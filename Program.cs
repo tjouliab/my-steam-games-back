@@ -1,3 +1,4 @@
+using MySteamGamesBack.Data;
 using MySteamGamesBack.Models;
 using MySteamGamesBack.Services;
 
@@ -7,6 +8,13 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.Configure<SteamOptions>(builder.Configuration.GetSection("Steam"));
 builder.Services.AddScoped<ISteamService, SteamService>();
+builder.Services.AddScoped<IGameService, GameService>();
+builder.Services.AddScoped<IGenreService, GenreService>();
+
+builder.Services.AddScoped<AppDbContext, AppDbContext>();
+builder.Services.AddScoped<IGameRepository, GameRepository>();
+builder.Services.AddScoped<IGenreRepository, GenreRepository>();
+builder.Services.AddScoped<IStatusRepository, StatusRepository>();
 
 var app = builder.Build();
 

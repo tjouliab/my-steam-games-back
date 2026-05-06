@@ -11,7 +11,7 @@ public record SteamGameEnriched
     public required long RtimeLastPlayed { get; set; }
     public required ReleaseDateDto ReleaseDate { get; set; }
     public required MetacriticDto Metacritic { get; set; }
-    public required List<GenreDto> Genres { get; set; }
+    public required IEnumerable<GenreDto> Genres { get; set; }
     public required PriceOverviewDto PriceOverview { get; set; }
     public required ReviewsSummaryDto ReviewsSummary { get; set; }
 }

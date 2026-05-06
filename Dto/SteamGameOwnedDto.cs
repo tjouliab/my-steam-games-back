@@ -14,7 +14,7 @@ public class SteamGamesOwnedResponseBody
     public int GameCount { get; set; }
 
     [JsonPropertyName("games")]
-    public List<SteamGameOwnedDto> Games { get; set; } = [];
+    public IEnumerable<SteamGameOwnedDto> Games { get; set; } = [];
 }
 
 public class SteamGameOwnedDto

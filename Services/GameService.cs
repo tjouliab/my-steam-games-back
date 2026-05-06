@@ -1,20 +1,82 @@
 using Microsoft.Extensions.Options;
+using MySteamGamesBack.Data;
+using MySteamGamesBack.Dto;
 using MySteamGamesBack.Models;
 
 namespace MySteamGamesBack.Services;
 
-public class GameService(ILogger<GameService> logger, ISteamService steamService) : IGameService
+public class GameService(
+    IOptions<SteamOptions> options,
+    IGameRepository gameRepository,
+    ISteamService steamService,
+    IGenreService genreService
+) : IGameService
 {
-    private readonly ILogger<GameService> _logger = logger;
+    private readonly IEnumerable<string> _familyPlayersId = options.Value.FamilyPlayersId ?? throw new InvalidOperationException("Steam Family players not configured.");
+    private readonly IGameRepository _gameRepository = gameRepository;
     private readonly ISteamService _steamService = steamService;
+    private readonly IGenreService _genreService = genreService;
 
-    public async Task<List<SteamGameEnriched>> PopulateGamesTable()
+    public async Task PopulateGamesTable()
     {
-        var familyGames = _steamService.GetFamilyGamesDistinct();
+        var familyGames = await GetFamilyGamesDistinct();
 
-        // return await EnrichPlayerGames(familyGames);
-        return [];
+        var entities = await ConvertGamesToEntities(familyGames);
+
+        await _gameRepository.Save(entities);
     }
 
+    private async Task<IEnumerable<SteamGameOwnedDto>> GetFamilyGamesDistinct()
+    {
+        var tasks = _familyPlayersId.Select(_steamService.GetPlayerGames);
+        var results = await Task.WhenAll(tasks);
 
+        return [.. results.SelectMany(games => games).DistinctBy(game => game.AppId)];
+    }
+
+    private async Task<IEnumerable<GameEntity>> ConvertGamesToEntities(IEnumerable<SteamGameOwnedDto> games)
+    {
+        var entities = new List<GameEntity>();
+        Dictionary<string, GenreEntity> genreCache = [];
+
+        // Do not use Task.WhenAll on purpose to avoid flooding Steam API
+        foreach (var game in games)
+        {
+            // If not enough informations, just ignore the game
+            var details = await _steamService.GetGameDetails(game.AppId);
+            if (details == null) continue;
+
+            var reviews = await _steamService.GetGameReviews(game.AppId);
+            if (reviews == null) continue;
+
+            entities.Add(ConvertGameToEntity(game, details, reviews, genreCache));
+        }
+
+        return entities;
+    }
+
+    private GameEntity ConvertGameToEntity(SteamGameOwnedDto game, SteamGameDetailsDto details, SteamGameReviewsDto reviews, Dictionary<string, GenreEntity> genreCache)
+    {
+        var genreEntities = _genreService.ConvertGenresToEntites(details.Genres, genreCache);
+
+        var isDateParsed = DateTime.TryParse(details.ReleaseDate.Date, out var releaseDate);
+
+        return new GameEntity
+        {
+            AppId = game.AppId,
+            Name = game.Name,
+            IsVisible = game.PlaytimeForever > 0,
+            ImgIconUrl = game.ImgIconUrl,
+            MetacriticScore = details.Metacritic.Score,
+            PositiveReviews = reviews.ReviewsSummary.TotalPositive,
+            NegativeReviews = reviews.ReviewsSummary.TotalNegative,
+            PlayTime = game.PlaytimeForever,
+            LastTimePlayed = new DateTime(game.RtimeLastPlayed),
+            ReleaseDate = isDateParsed ? releaseDate : null,
+            InitialPrice = details.PriceOverview.Initial,
+            Genres = genreEntities,
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow,
+        };
+    }
 }

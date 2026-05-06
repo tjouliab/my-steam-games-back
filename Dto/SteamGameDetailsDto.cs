@@ -20,7 +20,7 @@ public class SteamGameDetailsDto
     public MetacriticDto Metacritic { get; set; } = new MetacriticDto { Score = -1 };
 
     [JsonPropertyName("genres")]
-    public required List<GenreDto> Genres { get; set; }
+    public required IEnumerable<GenreDto> Genres { get; set; }
 
     [JsonPropertyName("price_overview")]
     public PriceOverviewDto PriceOverview { get; set; } = new PriceOverviewDto { Initial = 0 };
