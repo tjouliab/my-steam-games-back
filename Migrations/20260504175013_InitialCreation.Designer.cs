@@ -11,7 +11,7 @@ using MySteamGamesBack.Data;
 namespace my_steam_games_back.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260430214757_InitialCreation")]
+    [Migration("20260504175013_InitialCreation")]
     partial class InitialCreation
     {
         /// <inheritdoc />
@@ -20,7 +20,22 @@ namespace my_steam_games_back.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "10.0.7");
 
-            modelBuilder.Entity("MySteamGamesBack.Data.Entities.GameEntity", b =>
+            modelBuilder.Entity("GameGenre", b =>
+                {
+                    b.Property<int>("GameId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("GenreId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("GameId", "GenreId");
+
+                    b.HasIndex("GenreId");
+
+                    b.ToTable("GameGenre");
+                });
+
+            modelBuilder.Entity("MySteamGamesBack.Data.GameEntity", b =>
                 {
                     b.Property<int>("AppId")
                         .ValueGeneratedOnAdd()
@@ -80,24 +95,9 @@ namespace my_steam_games_back.Migrations
                     b.ToTable("Games");
                 });
 
-            modelBuilder.Entity("MySteamGamesBack.Data.Entities.GameGenreEntity", b =>
+            modelBuilder.Entity("MySteamGamesBack.Data.GenreEntity", b =>
                 {
                     b.Property<int>("AppId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("GenreId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("AppId", "GenreId");
-
-                    b.HasIndex("GenreId");
-
-                    b.ToTable("GameGenres");
-                });
-
-            modelBuilder.Entity("MySteamGamesBack.Data.Entities.GenreEntity", b =>
-                {
-                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
@@ -105,12 +105,12 @@ namespace my_steam_games_back.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.HasKey("Id");
+                    b.HasKey("AppId");
 
                     b.ToTable("Genres");
                 });
 
-            modelBuilder.Entity("MySteamGamesBack.Data.Entities.StatusEntity", b =>
+            modelBuilder.Entity("MySteamGamesBack.Data.StatusEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -147,42 +147,28 @@ namespace my_steam_games_back.Migrations
                         });
                 });
 
-            modelBuilder.Entity("MySteamGamesBack.Data.Entities.GameEntity", b =>
+            modelBuilder.Entity("GameGenre", b =>
                 {
-                    b.HasOne("MySteamGamesBack.Data.Entities.StatusEntity", "Status")
+                    b.HasOne("MySteamGamesBack.Data.GameEntity", null)
+                        .WithMany()
+                        .HasForeignKey("GameId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MySteamGamesBack.Data.GenreEntity", null)
+                        .WithMany()
+                        .HasForeignKey("GenreId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("MySteamGamesBack.Data.GameEntity", b =>
+                {
+                    b.HasOne("MySteamGamesBack.Data.StatusEntity", "Status")
                         .WithMany()
                         .HasForeignKey("StatusId");
 
                     b.Navigation("Status");
-                });
-
-            modelBuilder.Entity("MySteamGamesBack.Data.Entities.GameGenreEntity", b =>
-                {
-                    b.HasOne("MySteamGamesBack.Data.Entities.GameEntity", "Game")
-                        .WithMany("GameGenres")
-                        .HasForeignKey("AppId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("MySteamGamesBack.Data.Entities.GenreEntity", "Genre")
-                        .WithMany("GameGenres")
-                        .HasForeignKey("GenreId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Game");
-
-                    b.Navigation("Genre");
-                });
-
-            modelBuilder.Entity("MySteamGamesBack.Data.Entities.GameEntity", b =>
-                {
-                    b.Navigation("GameGenres");
-                });
-
-            modelBuilder.Entity("MySteamGamesBack.Data.Entities.GenreEntity", b =>
-                {
-                    b.Navigation("GameGenres");
                 });
 #pragma warning restore 612, 618
         }

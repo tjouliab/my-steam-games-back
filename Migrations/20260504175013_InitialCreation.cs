@@ -17,13 +17,13 @@ namespace my_steam_games_back.Migrations
                 name: "Genres",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                    AppId = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Description = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Genres", x => x.Id);
+                    table.PrimaryKey("PK_Genres", x => x.AppId);
                 });
 
             migrationBuilder.CreateTable(
@@ -72,26 +72,26 @@ namespace my_steam_games_back.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "GameGenres",
+                name: "GameGenre",
                 columns: table => new
                 {
-                    AppId = table.Column<int>(type: "INTEGER", nullable: false),
+                    GameId = table.Column<int>(type: "INTEGER", nullable: false),
                     GenreId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_GameGenres", x => new { x.AppId, x.GenreId });
+                    table.PrimaryKey("PK_GameGenre", x => new { x.GameId, x.GenreId });
                     table.ForeignKey(
-                        name: "FK_GameGenres_Games_AppId",
-                        column: x => x.AppId,
+                        name: "FK_GameGenre_Games_GameId",
+                        column: x => x.GameId,
                         principalTable: "Games",
                         principalColumn: "AppId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_GameGenres_Genres_GenreId",
+                        name: "FK_GameGenre_Genres_GenreId",
                         column: x => x.GenreId,
                         principalTable: "Genres",
-                        principalColumn: "Id",
+                        principalColumn: "AppId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -107,8 +107,8 @@ namespace my_steam_games_back.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_GameGenres_GenreId",
-                table: "GameGenres",
+                name: "IX_GameGenre_GenreId",
+                table: "GameGenre",
                 column: "GenreId");
 
             migrationBuilder.CreateIndex(
@@ -121,7 +121,7 @@ namespace my_steam_games_back.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "GameGenres");
+                name: "GameGenre");
 
             migrationBuilder.DropTable(
                 name: "Games");
