@@ -6,6 +6,7 @@ public class AppDbContext : DbContext
 {
     public DbSet<GameEntity> Games => Set<GameEntity>();
     public DbSet<GenreEntity> Genres => Set<GenreEntity>();
+    public DbSet<TagEntity> Tags => Set<TagEntity>();
     public DbSet<StatusEntity> Statuses => Set<StatusEntity>();
 
     protected override void OnConfiguring(DbContextOptionsBuilder options)
@@ -38,8 +39,26 @@ public class AppDbContext : DbContext
                 j => j.HasKey("GameId", "GenreId")
             );
 
+        // Skip navigation: declare join table GameTag
+        modelBuilder.Entity<GameEntity>()
+            .HasMany(g => g.Tags)
+            .WithMany(g => g.Games)
+            .UsingEntity<Dictionary<string, object>>(
+                "GameTag",
+                j => j.HasOne<TagEntity>()
+                    .WithMany()
+                    .HasForeignKey("TagId"),
+                j => j.HasOne<GameEntity>()
+                    .WithMany()
+                    .HasForeignKey("GameId"),
+                j => j.HasKey("GameId", "TagId")
+            );
+
         modelBuilder.Entity<GenreEntity>()
             .HasKey(g => g.AppId);
+
+        modelBuilder.Entity<TagEntity>()
+            .HasKey(g => g.Id);
 
         modelBuilder.Entity<StatusEntity>().HasData(
             StatusesEnum.Completed,

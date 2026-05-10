@@ -10,7 +10,7 @@ public class GenreRepository(AppDbContext dbContext) : IGenreRepository
     {
         var genre = await _dbContext.Genres.FindAsync(Id);
 
-        if (genre == null) throw new KeyNotFoundException($"Game with id {Id} was not found.");
+        if (genre == null) throw new KeyNotFoundException($"Genre with id {Id} was not found.");
 
         return genre;
     }
