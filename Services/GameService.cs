@@ -73,7 +73,7 @@ public class GameService(
             .FromUnixTimeSeconds(game.RtimeLastPlayed)
             .UtcDateTime;
 
-        var isCompleted = achievements.All(a => a.Achieved);
+        var isCompleted = achievements.All(a => a.Achieved == 1);
 
         return new GameEntity
         {

@@ -5,26 +5,27 @@ namespace MySteamGamesBack.Dto;
 public class SteamPlayerAchiementsDto
 {
     [JsonPropertyName("playerstats")]
-    public required PlayerStats PlayerStats;
+    public required PlayerStats PlayerStats { get; set; }
 }
 
 public class PlayerStats
 {
     [JsonPropertyName("gameName")]
-    public required string Name;
+    public string? Name { get; set; }
 
     [JsonPropertyName("achievements")]
-    public required IEnumerable<Achievement> Achievements = [];
+    public IEnumerable<Achievement> Achievements { get; set; } = [];
 }
 
 public class Achievement
 {
     [JsonPropertyName("apiname")]
-    public required string Name;
+    public required string Name { get; set; }
 
+    // Represents 0/1 instead of true/false
     [JsonPropertyName("achieved")]
-    public required bool Achieved;
+    public required int Achieved { get; set; }
 
     [JsonPropertyName("unlocktime")]
-    public required int UnlockTime;
+    public required int UnlockTime { get; set; }
 }
