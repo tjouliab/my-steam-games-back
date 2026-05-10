@@ -40,4 +40,14 @@ public class SteamService(IOptions<SteamOptions> options) : ISteamService
 
 		return gameReviewsContent;
 	}
+
+	public async Task<IEnumerable<Achievement>> GetPlayerAchievements(string playerId, int AppId)
+	{
+		using HttpResponseMessage playerAchievementsJson = await client.GetAsync($"https://api.steampowered.com/ISteamUserStats/GetPlayerAchievements/v0001/?key={_steamApiKey}&steamid={playerId}&appid={AppId}");
+		playerAchievementsJson.EnsureSuccessStatusCode();
+
+		var playerAchievementsContent = await playerAchievementsJson.Content.ReadFromJsonAsync<SteamPlayerAchiementsDto>();
+
+		return playerAchievementsContent?.PlayerStats?.Achievements ?? [];
+	}
 }

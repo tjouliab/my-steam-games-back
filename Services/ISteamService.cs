@@ -9,4 +9,6 @@ public interface ISteamService
 	Task<SteamGameDetailsDto?> GetGameDetails(int AppId);
 
 	Task<SteamGameReviewsDto?> GetGameReviews(int AppId);
+
+	Task<IEnumerable<Achievement>> GetPlayerAchievements(string playerId, int AppId);
 }

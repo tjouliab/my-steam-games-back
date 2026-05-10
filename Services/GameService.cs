@@ -12,6 +12,7 @@ public class GameService(
     IGenreService genreService
 ) : IGameService
 {
+    private readonly string _playerId = options.Value.PlayerId ?? throw new InvalidOperationException("Player not configured.");
     private readonly IEnumerable<string> _familyPlayersId = options.Value.FamilyPlayersId ?? throw new InvalidOperationException("Steam Family players not configured.");
     private readonly IGameRepository _gameRepository = gameRepository;
     private readonly ISteamService _steamService = steamService;
@@ -49,13 +50,20 @@ public class GameService(
             var reviews = await _steamService.GetGameReviews(game.AppId);
             if (reviews == null) continue;
 
-            entities.Add(ConvertGameToEntity(game, details, reviews, genreCache));
+            var achievements = await _steamService.GetPlayerAchievements(_playerId, game.AppId);
+
+            entities.Add(ConvertGameToEntity(game, details, reviews, achievements, genreCache));
         }
 
         return entities;
     }
 
-    private GameEntity ConvertGameToEntity(SteamGameOwnedDto game, SteamGameDetailsDto details, SteamGameReviewsDto reviews, Dictionary<string, GenreEntity> genreCache)
+    private GameEntity ConvertGameToEntity(
+        SteamGameOwnedDto game,
+        SteamGameDetailsDto details,
+        SteamGameReviewsDto reviews,
+        IEnumerable<Achievement> achievements,
+        Dictionary<string, GenreEntity> genreCache)
     {
         var genreEntities = _genreService.ConvertGenresToEntites(details.Genres, genreCache);
 
@@ -64,6 +72,8 @@ public class GameService(
         var lastTimePlayed = DateTimeOffset
             .FromUnixTimeSeconds(game.RtimeLastPlayed)
             .UtcDateTime;
+
+        var isCompleted = achievements.All(a => a.Achieved);
 
         return new GameEntity
         {
@@ -78,6 +88,7 @@ public class GameService(
             LastTimePlayed = lastTimePlayed,
             ReleaseDate = isDateParsed ? releaseDate : null,
             InitialPrice = details.PriceOverview.Initial,
+            StatusId = isCompleted ? StatusesEnum.Completed.Id : null,
             Genres = genreEntities,
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow,
