@@ -61,6 +61,10 @@ public class GameService(
 
         var isDateParsed = DateTime.TryParse(details.ReleaseDate.Date, out var releaseDate);
 
+        var lastTimePlayed = DateTimeOffset
+            .FromUnixTimeSeconds(game.RtimeLastPlayed)
+            .UtcDateTime;
+
         return new GameEntity
         {
             AppId = game.AppId,
@@ -71,7 +75,7 @@ public class GameService(
             PositiveReviews = reviews.ReviewsSummary.TotalPositive,
             NegativeReviews = reviews.ReviewsSummary.TotalNegative,
             PlayTime = game.PlaytimeForever,
-            LastTimePlayed = new DateTime(game.RtimeLastPlayed),
+            LastTimePlayed = lastTimePlayed,
             ReleaseDate = isDateParsed ? releaseDate : null,
             InitialPrice = details.PriceOverview.Initial,
             Genres = genreEntities,
