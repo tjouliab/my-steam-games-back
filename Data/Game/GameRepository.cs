@@ -28,7 +28,7 @@ public class GameRepository(AppDbContext dbContext) : IGameRepository
     public async Task Save(IEnumerable<GameEntity> entities)
     {
         var newGames = await FilterNew(entities);
-        if (newGames.Any()) return;
+        if (!newGames.Any()) return;
 
         var genres = newGames
             .SelectMany(g => g.Genres)
