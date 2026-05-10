@@ -51,10 +51,35 @@ public class GameRepository(AppDbContext dbContext) : IGameRepository
             }
         }
 
+        var tags = newGames
+            .SelectMany(g => g.Tags)
+            .DistinctBy(t => t.Id);
+
+        var tagsIds = tags
+            .Select(t => t.Id)
+            .ToHashSet();
+
+        var trackedTagsById = await _dbContext.Tags
+            .Where(t => tagsIds.Contains(t.Id))
+            .ToDictionaryAsync(t => t.Id);
+
+        foreach (var tag in tags)
+        {
+            if (!trackedTagsById.ContainsKey(tag.Id))
+            {
+                _dbContext.Tags.Add(tag);
+                trackedTagsById[tag.Id] = tag;
+            }
+        }
+
         foreach (var game in newGames)
         {
             game.Genres = game.Genres
                 .Select(g => trackedGenresByAppId[g.AppId])
+                .ToList();
+
+            game.Tags = game.Tags
+                .Select(t => trackedTagsById[t.Id])
                 .ToList();
         }
 
