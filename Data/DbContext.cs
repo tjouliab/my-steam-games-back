@@ -42,10 +42,10 @@ public class AppDbContext : DbContext
             .HasKey(g => g.AppId);
 
         modelBuilder.Entity<StatusEntity>().HasData(
-            new StatusEntity { Id = 1, Label = "100%" },
-            new StatusEntity { Id = 2, Label = "Finished" },
-            new StatusEntity { Id = 3, Label = "Unfinished" },
-            new StatusEntity { Id = 4, Label = "Abandoned" }
+            StatusesEnum.Completed,
+            StatusesEnum.Finished,
+            StatusesEnum.Unfinished,
+            StatusesEnum.Abandoned
         );
     }
 }

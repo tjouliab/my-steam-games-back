@@ -14,7 +14,6 @@ builder.Services.AddScoped<IGenreService, GenreService>();
 builder.Services.AddScoped<AppDbContext, AppDbContext>();
 builder.Services.AddScoped<IGameRepository, GameRepository>();
 builder.Services.AddScoped<IGenreRepository, GenreRepository>();
-builder.Services.AddScoped<IStatusRepository, StatusRepository>();
 
 var app = builder.Build();
 
