@@ -23,12 +23,27 @@ public class SteamService(IOptions<SteamOptions> options) : ISteamService
 
 	public async Task<SteamGameDetailsDto?> GetGameDetails(int AppId)
 	{
-		using HttpResponseMessage gameDetailsJson = await client.GetAsync($"https://store.steampowered.com/api/appdetails?appids={AppId}&cc=fr&l=french");
-		gameDetailsJson.EnsureSuccessStatusCode();
+		using HttpResponseMessage gameDetailsFRJson = await client.GetAsync($"https://store.steampowered.com/api/appdetails?appids={AppId}&cc=fr&l=french");
+		using HttpResponseMessage gameDetailsENJson = await client.GetAsync($"https://store.steampowered.com/api/appdetails?appids={AppId}&cc=en&l=english");
 
-		var gameDetailsContent = await gameDetailsJson.Content.ReadFromJsonAsync<Dictionary<string, SteamGameDetailsResponse>>();
+		gameDetailsFRJson.EnsureSuccessStatusCode();
+		gameDetailsENJson.EnsureSuccessStatusCode();
 
-		return gameDetailsContent?.Values.First().Data;
+		var gameDetailsFRContent = await gameDetailsFRJson.Content.ReadFromJsonAsync<Dictionary<string, SteamGameDetailsResponse>>();
+		var gameDetailsENContent = await gameDetailsENJson.Content.ReadFromJsonAsync<Dictionary<string, SteamGameDetailsResponse>>();
+
+		var gameDetailsFR = gameDetailsFRContent?.Values.First()?.Data;
+		var gameDetailsEN = gameDetailsENContent?.Values.First()?.Data;
+
+		if (gameDetailsFR == null || gameDetailsEN == null) return null;
+
+		return new SteamGameDetailsDto
+		{
+			ReleaseDate = gameDetailsEN.ReleaseDate, // Release date "aout" is not parsed properly in FR
+			Metacritic = gameDetailsFR.Metacritic,
+			Genres = gameDetailsFR.Genres,
+			PriceOverview = gameDetailsFR.PriceOverview,
+		};
 	}
 
 	public async Task<SteamGameReviewsDto?> GetGameReviews(int AppId)

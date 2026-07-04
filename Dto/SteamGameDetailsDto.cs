@@ -17,7 +17,7 @@ public class SteamGameDetailsDto
     public required ReleaseDateDto ReleaseDate { get; set; }
 
     [JsonPropertyName("metacritic")]
-    public MetacriticDto Metacritic { get; set; } = new MetacriticDto { Score = -1 };
+    public MetacriticDto? Metacritic { get; set; } = null;
 
     [JsonPropertyName("genres")]
     public required IEnumerable<GenreDto> Genres { get; set; }

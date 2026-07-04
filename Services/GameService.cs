@@ -67,8 +67,6 @@ public class GameService(
     {
         var genreEntities = _genreService.ConvertGenresToEntites(details.Genres, genreCache);
 
-        var isDateParsed = DateTime.TryParse(details.ReleaseDate.Date, out var releaseDate);
-
         var lastTimePlayed = DateTimeOffset
             .FromUnixTimeSeconds(game.RtimeLastPlayed)
             .UtcDateTime;
@@ -81,15 +79,15 @@ public class GameService(
             Name = game.Name,
             IsVisible = game.PlaytimeForever > 0,
             ImgIconUrl = game.ImgIconUrl,
-            MetacriticScore = details.Metacritic.Score,
+            MetacriticScore = details.Metacritic?.Score ?? null,
             PositiveReviews = reviews.ReviewsSummary.TotalPositive,
             NegativeReviews = reviews.ReviewsSummary.TotalNegative,
             PlayTime = game.PlaytimeForever,
             LastTimePlayed = lastTimePlayed,
-            ReleaseDate = isDateParsed ? releaseDate : null,
+            ReleaseDate = DateTime.Parse(details.ReleaseDate.Date),
             InitialPrice = details.PriceOverview.Initial,
             StatusId = isCompleted ? StatusesEnum.Completed.Id : null,
-            Genres = genreEntities,
+            Genres = genreEntities?.ToList() ?? [],
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow,
         };
