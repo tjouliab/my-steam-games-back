@@ -2,5 +2,5 @@ namespace MySteamGamesBack.Services;
 
 public interface IGameService
 {
-    Task PopulateGamesTable();
+    Task PopulateGamesTable(Func<int, int, Task> onProgress, CancellationToken cancellationToken);
 }

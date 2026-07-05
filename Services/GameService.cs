@@ -18,13 +18,11 @@ public class GameService(
     private readonly ISteamService _steamService = steamService;
     private readonly IGenreService _genreService = genreService;
 
-    public async Task PopulateGamesTable()
+    public async Task PopulateGamesTable(Func<int, int, Task> onProgress, CancellationToken cancellationToken)
     {
-        var familyGames = await GetFamilyGamesDistinct();
+        var familyGames = (await GetFamilyGamesDistinct()).ToList();
 
-        var entities = await ConvertGamesToEntities(familyGames);
-
-        await _gameRepository.Upsert(entities);
+        await UpsertGamesSequential(familyGames, onProgress, cancellationToken);
     }
 
     private async Task<IEnumerable<SteamGameOwnedDto>> GetFamilyGamesDistinct()
@@ -35,14 +33,22 @@ public class GameService(
         return [.. results.SelectMany(games => games).DistinctBy(game => game.AppId)];
     }
 
-    private async Task<IEnumerable<GameEntity>> ConvertGamesToEntities(IEnumerable<SteamGameOwnedDto> games)
+    private async Task UpsertGamesSequential(
+        List<SteamGameOwnedDto> games,
+        Func<int, int, Task> onProgress,
+        CancellationToken cancellationToken)
     {
-        var entities = new List<GameEntity>();
         Dictionary<string, GenreEntity> genreCache = [];
+
+        // Websocket init
+        var total = games.Count;
+        var processed = 0;
 
         // Do not use Task.WhenAll on purpose to avoid flooding Steam API
         foreach (var game in games)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             // If not enough informations, just ignore the game
             var details = await _steamService.GetGameDetails(game.AppId);
             if (details == null) continue;
@@ -52,10 +58,14 @@ public class GameService(
 
             var achievements = await _steamService.GetPlayerAchievements(_playerId, game.AppId);
 
-            entities.Add(ConvertGameToEntity(game, details, reviews, achievements, genreCache));
-        }
+            var entity = ConvertGameToEntity(game, details, reviews, achievements, genreCache);
 
-        return entities;
+            await _gameRepository.Upsert(entity);
+
+            // Websocket progress
+            processed++;
+            await onProgress(processed, total);
+        }
     }
 
     private GameEntity ConvertGameToEntity(

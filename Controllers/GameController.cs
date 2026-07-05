@@ -1,6 +1,8 @@
+using System.Net.WebSockets;
+using System.Text;
+using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.JSInterop.Infrastructure;
-using MySteamGamesBack.Models;
+using MySteamGamesBack.Dto;
 using MySteamGamesBack.Services;
 
 namespace MySteamGamesBack.Controllers;
@@ -11,10 +13,58 @@ public class GameController(IGameService gameService) : ControllerBase
 {
     private readonly IGameService _gameService = gameService;
 
-    [HttpPost("populate-games-table")]
-    public async Task<OkResult> PopulateGamesTable()
+    [HttpGet("populate-games-table")]
+    public async Task PopulateGamesTable(CancellationToken cancellationToken)
     {
-        await _gameService.PopulateGamesTable();
-        return Ok();
+        if (!HttpContext.WebSockets.IsWebSocketRequest)
+        {
+            HttpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
+            return;
+        }
+
+        using var webSocket = await HttpContext.WebSockets.AcceptWebSocketAsync();
+
+        await _gameService.PopulateGamesTable(
+            async (processed, total) =>
+            {
+                var percent = total == 0
+                    ? 100
+                    : processed * 100d / total;
+
+                await SendJson(webSocket, new PopulateGamesProgressDto
+                {
+                    Status = ProgressStatusEnum.Progress,
+                    Processed = processed,
+                    Total = total,
+                    Percent = percent
+                }, cancellationToken);
+            },
+            cancellationToken);
+
+        await SendJson(webSocket, new PopulateGamesProgressDto
+        {
+            Status = ProgressStatusEnum.Completed
+        }, cancellationToken);
+
+        await webSocket.CloseAsync(
+            WebSocketCloseStatus.NormalClosure,
+            "Completed",
+            cancellationToken);
+    }
+
+    private static async Task SendJson(
+        WebSocket webSocket,
+        PopulateGamesProgressDto payload,
+        CancellationToken cancellationToken)
+    {
+        var json = JsonSerializer.Serialize(payload);
+
+        var bytes = Encoding.UTF8.GetBytes(json);
+
+        await webSocket.SendAsync(
+            bytes,
+            WebSocketMessageType.Text,
+            endOfMessage: true,
+            cancellationToken);
     }
 }
