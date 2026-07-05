@@ -18,7 +18,7 @@ public class GameService(
     private readonly ISteamService _steamService = steamService;
     private readonly IGenreService _genreService = genreService;
 
-    public async Task PopulateGamesTable(Func<int, int, Task> onProgress, CancellationToken cancellationToken)
+    public async Task PopulateGamesTable(Func<int, int, int, Task> onProgress, CancellationToken cancellationToken)
     {
         var familyGames = (await GetFamilyGamesDistinct()).ToList();
 
@@ -35,13 +35,15 @@ public class GameService(
 
     private async Task UpsertGamesSequential(
         List<SteamGameOwnedDto> games,
-        Func<int, int, Task> onProgress,
+        Func<int, int, int, Task> onProgress,
         CancellationToken cancellationToken)
     {
         Dictionary<string, GenreEntity> genreCache = [];
 
         // Websocket init
         var total = games.Count;
+        var watch = System.Diagnostics.Stopwatch.StartNew();
+        var timeTaken = 0;
         var processed = 0;
 
         // Do not use Task.WhenAll on purpose to avoid flooding Steam API
@@ -63,8 +65,9 @@ public class GameService(
             await _gameRepository.Upsert(entity);
 
             // Websocket progress
+            timeTaken += (int)watch.ElapsedMilliseconds;
             processed++;
-            await onProgress(processed, total);
+            await onProgress(processed, total, timeTaken);
         }
     }
 

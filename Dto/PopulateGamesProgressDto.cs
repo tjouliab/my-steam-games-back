@@ -6,4 +6,6 @@ public class PopulateGamesProgressDto
     public int? Processed { get; init; }
     public int? Total { get; init; }
     public double? Percent { get; init; }
+    public int? TimeTaken { get; init; }
+    public int? TimeRemaining { get; init; }
 }

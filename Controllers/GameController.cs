@@ -25,18 +25,24 @@ public class GameController(IGameService gameService) : ControllerBase
         using var webSocket = await HttpContext.WebSockets.AcceptWebSocketAsync();
 
         await _gameService.PopulateGamesTable(
-            async (processed, total) =>
+            async (processed, total, timeTaken) =>
             {
-                var percent = total == 0
+                double percent = total == 0
                     ? 100
                     : processed * 100d / total;
+
+                int timeRemaining = processed == 0 
+                    ? 0 
+                    : (total - processed) * timeTaken / processed;
 
                 await SendJson(webSocket, new PopulateGamesProgressDto
                 {
                     Status = ProgressStatusEnum.Progress,
                     Processed = processed,
                     Total = total,
-                    Percent = percent
+                    Percent = percent,
+                    TimeTaken = timeTaken,
+                    TimeRemaining = timeRemaining
                 }, cancellationToken);
             },
             cancellationToken);
