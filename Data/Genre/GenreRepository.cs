@@ -20,35 +20,31 @@ public class GenreRepository(AppDbContext dbContext) : IGenreRepository
         return await _dbContext.Genres.ToListAsync();
     }
 
-    public async Task Upsert(GenreEntity entity)
+    public async Task<IReadOnlyDictionary<int, GenreEntity>> TrackExisting(IEnumerable<GenreEntity> entities)
     {
-        await Upsert([entity]);
-    }
+        var incomingGenres = entities
+            .DistinctBy(e => e.AppId)
+            .ToList();
 
-    public async Task Upsert(IEnumerable<GenreEntity> entities)
-    {
-        var newEntities = await FilterNew(entities);
+        if (incomingGenres.Count == 0) return new Dictionary<int, GenreEntity>();
 
-        _dbContext.Genres.AddRange(newEntities);
-        await _dbContext.SaveChangesAsync();
-    }
-
-    private async Task<IEnumerable<GenreEntity>> FilterNew(IEnumerable<GenreEntity> entities)
-    {
-        var appIds = entities
-            .Select(e => e.AppId)
-            .Distinct()
+        var incomingAppIds = incomingGenres
+            .Select(g => g.AppId)
             .ToHashSet();
 
-        var existingGenres = await _dbContext.Genres
-            .Where(g => appIds.Contains(g.AppId))
-            .Select(g => g.AppId)
-            .ToHashSetAsync();
+        var trackedByAppId = await _dbContext.Genres
+            .Where(g => incomingAppIds.Contains(g.AppId))
+            .ToDictionaryAsync(g => g.AppId);
 
-        return entities
-            .DistinctBy(e => e.AppId)
-            .Where(e => !existingGenres.Contains(e.AppId))
-            .ToList();
+        foreach (var incomingGenre in incomingGenres)
+        {
+            if (trackedByAppId.TryGetValue(incomingGenre.AppId, out var existingGenre)) continue;
+
+            _dbContext.Genres.Add(incomingGenre);
+            trackedByAppId.Add(incomingGenre.AppId, incomingGenre);
+        }
+
+        return trackedByAppId;
     }
 }
 

@@ -20,34 +20,30 @@ public class TagRepository(AppDbContext dbContext) : ITagRepository
         return await _dbContext.Tags.ToListAsync();
     }
 
-    public async Task Upsert(TagEntity entity)
+    public async Task<IReadOnlyDictionary<int, TagEntity>> TrackExisting(IEnumerable<TagEntity> entities)
     {
-        await Upsert([entity]);
-    }
+        var incomingTags = entities
+            .DistinctBy(e => e.Id)
+            .ToList();
 
-    public async Task Upsert(IEnumerable<TagEntity> entities)
-    {
-        var newEntities = await FilterNew(entities);
+        if (incomingTags.Count == 0) return new Dictionary<int, TagEntity>();
 
-        _dbContext.Tags.AddRange(newEntities);
-        await _dbContext.SaveChangesAsync();
-    }
-
-    private async Task<IEnumerable<TagEntity>> FilterNew(IEnumerable<TagEntity> entities)
-    {
-        var ids = entities
-            .Select(e => e.Id)
-            .Distinct()
+        var incomingIds = incomingTags
+            .Select(t => t.Id)
             .ToHashSet();
 
-        var existingTags = await _dbContext.Tags
-            .Where(t => ids.Contains(t.Id))
-            .Select(t => t.Id)
-            .ToHashSetAsync();
+        var trackedById = await _dbContext.Tags
+            .Where(t => incomingIds.Contains(t.Id))
+            .ToDictionaryAsync(t => t.Id);
 
-        return entities
-            .DistinctBy(e => e.Id)
-            .Where(e => !existingTags.Contains(e.Id))
-            .ToList();
+        foreach (var incomingTag in incomingTags)
+        {
+            if (trackedById.TryGetValue(incomingTag.Id, out var existingTag)) continue;
+
+            _dbContext.Tags.Add(incomingTag);
+            trackedById.Add(incomingTag.Id, incomingTag);
+        }
+
+        return trackedById;
     }
 }

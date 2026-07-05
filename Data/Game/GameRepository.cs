@@ -2,9 +2,15 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MySteamGamesBack.Data;
 
-public class GameRepository(AppDbContext dbContext) : IGameRepository
+public class GameRepository(
+    AppDbContext dbContext,
+    IGenreRepository genreRepository,
+    ITagRepository tagRepository
+    ) : IGameRepository
 {
     private readonly AppDbContext _dbContext = dbContext;
+    private readonly IGenreRepository _genreRepository = genreRepository;
+    private readonly ITagRepository _tagRepository = tagRepository;
 
     public async Task<GameEntity> Get(int Id)
     {
@@ -27,65 +33,130 @@ public class GameRepository(AppDbContext dbContext) : IGameRepository
 
     public async Task Upsert(IEnumerable<GameEntity> entities)
     {
-        var newGames = await FilterNew(entities);
-        if (!newGames.Any()) return;
+        var incomingGames = entities
+            .DistinctBy(g => g.AppId)
+            .ToList();
 
-        var genres = newGames
-            .SelectMany(g => g.Genres)
-            .DistinctBy(g => g.AppId);
+        if (incomingGames.Count == 0) return;
 
-        var genreAppIds = genres
+        var incomingAppIds = incomingGames
             .Select(g => g.AppId)
             .ToHashSet();
 
-        var trackedGenresByAppId = await _dbContext.Genres
-            .Where(g => genreAppIds.Contains(g.AppId))
+        var trackedGamesByAppId = await _dbContext.Games
+            .Include(g => g.Genres)
+            .Include(g => g.Tags)
+            .Where(g => incomingAppIds.Contains(g.AppId))
             .ToDictionaryAsync(g => g.AppId);
 
-        foreach (var genre in genres)
+        var trackedGenresByAppId = await _genreRepository.TrackExisting(
+            incomingGames.SelectMany(game => game.Genres));
+        var trackedTagsById = await _tagRepository.TrackExisting(
+            incomingGames.SelectMany(game => game.Tags));
+
+        foreach (var incomingGame in incomingGames)
         {
-            if (!trackedGenresByAppId.ContainsKey(genre.AppId))
-            {
-                _dbContext.Genres.Add(genre);
-                trackedGenresByAppId[genre.AppId] = genre;
-            }
-        }
-
-        var tags = newGames
-            .SelectMany(g => g.Tags)
-            .DistinctBy(t => t.Id);
-
-        var tagsIds = tags
-            .Select(t => t.Id)
-            .ToHashSet();
-
-        var trackedTagsById = await _dbContext.Tags
-            .Where(t => tagsIds.Contains(t.Id))
-            .ToDictionaryAsync(t => t.Id);
-
-        foreach (var tag in tags)
-        {
-            if (!trackedTagsById.ContainsKey(tag.Id))
-            {
-                _dbContext.Tags.Add(tag);
-                trackedTagsById[tag.Id] = tag;
-            }
-        }
-
-        foreach (var game in newGames)
-        {
-            game.Genres = game.Genres
+            var desiredGenres = incomingGame.Genres
                 .Select(g => trackedGenresByAppId[g.AppId])
                 .ToList();
 
-            game.Tags = game.Tags
+            var desiredTags = incomingGame.Tags
                 .Select(t => trackedTagsById[t.Id])
                 .ToList();
+
+            // Update existing game
+            if (trackedGamesByAppId.TryGetValue(incomingGame.AppId, out var existingGame))
+            {
+                UpdateExisting(existingGame, incomingGame);
+
+                UpdateExistingGenres(
+                    existingGame.Genres,
+                    desiredGenres
+                );
+
+                UpdateExistingTags(
+                    existingGame.Tags,
+                    desiredTags
+                );
+
+                continue;
+            }
+
+            // Insert new game
+            incomingGame.Genres = desiredGenres;
+            incomingGame.Tags = desiredTags;
+
+            _dbContext.Games.Add(incomingGame);
         }
 
-        _dbContext.Games.AddRange(newGames);
-
         await _dbContext.SaveChangesAsync();
+    }
+
+    private static void UpdateExisting(GameEntity existingGame, GameEntity incomingGame)
+    {
+        existingGame.PositiveReviews = incomingGame.PositiveReviews;
+        existingGame.NegativeReviews = incomingGame.NegativeReviews;
+        existingGame.LastTimePlayed = incomingGame.LastTimePlayed;
+        existingGame.PlayTime = incomingGame.PlayTime;
+        existingGame.UpdatedAt = incomingGame.UpdatedAt;
+    }
+
+    private static void UpdateExistingGenres(List<GenreEntity> currentGenres, IEnumerable<GenreEntity> desiredGenres)
+    {
+        var desiredKeys = desiredGenres
+            .Select(g => g.AppId)
+            .ToHashSet();
+
+        var currentKeys = currentGenres
+            .Select(g => g.AppId)
+            .ToHashSet();
+
+        // Remove previous genres if not needed
+        foreach (var currentGenre in currentGenres)
+        {
+            if (!desiredKeys.Contains(currentGenre.AppId))
+            {
+                currentGenres.Remove(currentGenre);
+            }
+        }
+
+        // Add new genres
+        foreach (var desiredGenre in desiredGenres)
+        {
+            if (currentKeys.Add(desiredGenre.AppId))
+            {
+                currentGenres.Add(desiredGenre);
+            }
+        }
+    }
+
+    private static void UpdateExistingTags(List<TagEntity> currentTags, IEnumerable<TagEntity> desiredTags)
+    {
+        var desiredKeys = desiredTags
+            .Select(g => g.Id)
+            .ToHashSet();
+
+        var currentKeys = currentTags
+            .Select(g => g.Id)
+            .ToHashSet();
+
+        // Remove previous tags if not needed
+        foreach (var currentTag in currentTags)
+        {
+            if (!desiredKeys.Contains(currentTag.Id))
+            {
+                currentTags.Remove(currentTag);
+            }
+        }
+
+        // Add new tags
+        foreach (var desiredTag in desiredTags)
+        {
+            if (currentKeys.Add(desiredTag.Id))
+            {
+                currentTags.Add(desiredTag);
+            }
+        }
     }
 
     Task ISoftDelete<GameEntity>.SoftDelete(GameEntity entity)
@@ -106,24 +177,5 @@ public class GameRepository(AppDbContext dbContext) : IGameRepository
     Task IUpdate<GameEntity>.Update(IEnumerable<GameEntity> entites)
     {
         throw new NotImplementedException();
-    }
-
-    // TODO: refactor FilterNew to base class
-    private async Task<IEnumerable<GameEntity>> FilterNew(IEnumerable<GameEntity> entities)
-    {
-        var appIds = entities
-            .Select(e => e.AppId)
-            .Distinct()
-            .ToHashSet();
-
-        var existingAppIds = await _dbContext.Games
-            .Where(g => appIds.Contains(g.AppId))
-            .Select(g => g.AppId)
-            .ToHashSetAsync();
-
-        return entities
-            .DistinctBy(e => e.AppId)
-            .Where(e => !existingAppIds.Contains(e.AppId))
-            .ToList();
     }
 }
