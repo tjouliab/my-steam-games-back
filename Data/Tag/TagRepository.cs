@@ -20,12 +20,12 @@ public class TagRepository(AppDbContext dbContext) : ITagRepository
         return await _dbContext.Tags.ToListAsync();
     }
 
-    public async Task Save(TagEntity entity)
+    public async Task Upsert(TagEntity entity)
     {
-        await Save([entity]);
+        await Upsert([entity]);
     }
 
-    public async Task Save(IEnumerable<TagEntity> entities)
+    public async Task Upsert(IEnumerable<TagEntity> entities)
     {
         var newEntities = await FilterNew(entities);
 

@@ -24,7 +24,7 @@ public class GameService(
 
         var entities = await ConvertGamesToEntities(familyGames);
 
-        await _gameRepository.Save(entities);
+        await _gameRepository.Upsert(entities);
     }
 
     private async Task<IEnumerable<SteamGameOwnedDto>> GetFamilyGamesDistinct()

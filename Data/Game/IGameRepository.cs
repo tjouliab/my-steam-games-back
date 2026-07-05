@@ -2,7 +2,7 @@ namespace MySteamGamesBack.Data;
 
 public interface IGameRepository :
     IGet<GameEntity>,
-    ISave<GameEntity>,
+    IUpsert<GameEntity>,
     IUpdate<GameEntity>,
     ISoftDelete<GameEntity>
 { }

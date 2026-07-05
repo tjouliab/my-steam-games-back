@@ -20,12 +20,12 @@ public class GenreRepository(AppDbContext dbContext) : IGenreRepository
         return await _dbContext.Genres.ToListAsync();
     }
 
-    public async Task Save(GenreEntity entity)
+    public async Task Upsert(GenreEntity entity)
     {
-        await Save([entity]);
+        await Upsert([entity]);
     }
 
-    public async Task Save(IEnumerable<GenreEntity> entities)
+    public async Task Upsert(IEnumerable<GenreEntity> entities)
     {
         var newEntities = await FilterNew(entities);
 

@@ -20,12 +20,12 @@ public class GameRepository(AppDbContext dbContext) : IGameRepository
         return await _dbContext.Games.ToListAsync();
     }
 
-    public async Task Save(GameEntity entity)
+    public async Task Upsert(GameEntity entity)
     {
-        await Save([entity]);
+        await Upsert([entity]);
     }
 
-    public async Task Save(IEnumerable<GameEntity> entities)
+    public async Task Upsert(IEnumerable<GameEntity> entities)
     {
         var newGames = await FilterNew(entities);
         if (!newGames.Any()) return;
