@@ -114,7 +114,8 @@ public class GameRepository(
             .ToHashSet();
 
         // Remove previous genres if not needed
-        foreach (var currentGenre in currentGenres)
+        // ToList is mandatory to avoid removing from the same list we iterate over
+        foreach (var currentGenre in currentGenres.ToList())
         {
             if (!desiredKeys.Contains(currentGenre.AppId))
             {
@@ -143,7 +144,8 @@ public class GameRepository(
             .ToHashSet();
 
         // Remove previous tags if not needed
-        foreach (var currentTag in currentTags)
+        // ToList is mandatory to avoid removing from the same list we iterate over
+        foreach (var currentTag in currentTags.ToList())
         {
             if (!desiredKeys.Contains(currentTag.Id))
             {
