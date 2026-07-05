@@ -4,13 +4,11 @@ namespace MySteamGamesBack.Data;
 
 public class GameRepository(
     AppDbContext dbContext,
-    IGenreRepository genreRepository,
-    ITagRepository tagRepository
+    IGenreRepository genreRepository
     ) : IGameRepository
 {
     private readonly AppDbContext _dbContext = dbContext;
     private readonly IGenreRepository _genreRepository = genreRepository;
-    private readonly ITagRepository _tagRepository = tagRepository;
 
     public async Task<GameEntity> Get(int Id)
     {
@@ -45,23 +43,16 @@ public class GameRepository(
 
         var trackedGamesByAppId = await _dbContext.Games
             .Include(g => g.Genres)
-            .Include(g => g.Tags)
             .Where(g => incomingAppIds.Contains(g.AppId))
             .ToDictionaryAsync(g => g.AppId);
 
         var trackedGenresByAppId = await _genreRepository.TrackExisting(
             incomingGames.SelectMany(game => game.Genres));
-        var trackedTagsById = await _tagRepository.TrackExisting(
-            incomingGames.SelectMany(game => game.Tags));
 
         foreach (var incomingGame in incomingGames)
         {
             var desiredGenres = incomingGame.Genres
                 .Select(g => trackedGenresByAppId[g.AppId])
-                .ToList();
-
-            var desiredTags = incomingGame.Tags
-                .Select(t => trackedTagsById[t.Id])
                 .ToList();
 
             // Update existing game
@@ -74,17 +65,11 @@ public class GameRepository(
                     desiredGenres
                 );
 
-                UpdateExistingTags(
-                    existingGame.Tags,
-                    desiredTags
-                );
-
                 continue;
             }
 
             // Insert new game
             incomingGame.Genres = desiredGenres;
-            incomingGame.Tags = desiredTags;
 
             _dbContext.Games.Add(incomingGame);
         }
@@ -129,36 +114,6 @@ public class GameRepository(
             if (currentKeys.Add(desiredGenre.AppId))
             {
                 currentGenres.Add(desiredGenre);
-            }
-        }
-    }
-
-    private static void UpdateExistingTags(List<TagEntity> currentTags, IEnumerable<TagEntity> desiredTags)
-    {
-        var desiredKeys = desiredTags
-            .Select(g => g.Id)
-            .ToHashSet();
-
-        var currentKeys = currentTags
-            .Select(g => g.Id)
-            .ToHashSet();
-
-        // Remove previous tags if not needed
-        // ToList is mandatory to avoid removing from the same list we iterate over
-        foreach (var currentTag in currentTags.ToList())
-        {
-            if (!desiredKeys.Contains(currentTag.Id))
-            {
-                currentTags.Remove(currentTag);
-            }
-        }
-
-        // Add new tags
-        foreach (var desiredTag in desiredTags)
-        {
-            if (currentKeys.Add(desiredTag.Id))
-            {
-                currentTags.Add(desiredTag);
             }
         }
     }
