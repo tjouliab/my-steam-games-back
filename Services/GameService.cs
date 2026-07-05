@@ -67,9 +67,9 @@ public class GameService(
     {
         var genreEntities = _genreService.ConvertGenresToEntites(details.Genres, genreCache);
 
-        var lastTimePlayed = DateTimeOffset
-            .FromUnixTimeSeconds(game.RtimeLastPlayed)
-            .UtcDateTime;
+        DateTime? lastTimePlayed = game.RtimeLastPlayed.HasValue
+            ? DateTimeOffset.FromUnixTimeSeconds(game.RtimeLastPlayed.Value).UtcDateTime
+            : null;
 
         var isCompleted = achievements.All(a => a.Achieved == 1);
 

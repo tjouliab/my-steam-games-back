@@ -32,5 +32,5 @@ public class SteamGameOwnedDto
     public string ImgIconUrl { get; set; } = string.Empty;
 
     [JsonPropertyName("rtime_last_played")]
-    public long RtimeLastPlayed { get; set; }
+    public long? RtimeLastPlayed { get; set; }
 }

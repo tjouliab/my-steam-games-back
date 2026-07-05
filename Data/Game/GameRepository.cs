@@ -96,9 +96,11 @@ public class GameRepository(
     {
         existingGame.PositiveReviews = incomingGame.PositiveReviews;
         existingGame.NegativeReviews = incomingGame.NegativeReviews;
-        existingGame.LastTimePlayed = incomingGame.LastTimePlayed;
+        existingGame.MetacriticScore = incomingGame.MetacriticScore;
         existingGame.PlayTime = incomingGame.PlayTime;
         existingGame.UpdatedAt = incomingGame.UpdatedAt;
+        // If the game is coming from a family member, LastTimePlayed is null so it should be set by hand afterwards
+        existingGame.LastTimePlayed ??= incomingGame.LastTimePlayed;
     }
 
     private static void UpdateExistingGenres(List<GenreEntity> currentGenres, IEnumerable<GenreEntity> desiredGenres)
