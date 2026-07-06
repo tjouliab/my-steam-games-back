@@ -86,11 +86,13 @@ public class GameService(
 
         var isCompleted = achievements.All(a => a.Achieved == 1);
 
+        var hasBeenStarted = game.PlaytimeForever > 0;
+
         return new GameEntity
         {
             AppId = game.AppId,
             Name = game.Name,
-            IsVisible = game.PlaytimeForever > 0,
+            Visibility = hasBeenStarted ? VisibilityEnum.Visible : VisibilityEnum.HiddenDefault,
             ImgIconUrl = game.ImgIconUrl,
             MetacriticScore = details.Metacritic?.Score ?? null,
             PositiveReviews = reviews.ReviewsSummary.TotalPositive,
@@ -99,7 +101,7 @@ public class GameService(
             LastTimePlayed = lastTimePlayed,
             ReleaseDate = DateTime.Parse(details.ReleaseDate.Date),
             InitialPrice = details.PriceOverview.Initial,
-            StatusId = isCompleted ? StatusesEnum.Completed.Id : null,
+            Status = isCompleted ? StatusesEnum.Completed : null,
             Genres = genreEntities?.ToList() ?? [],
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow,

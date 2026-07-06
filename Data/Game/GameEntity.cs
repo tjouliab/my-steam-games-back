@@ -4,7 +4,8 @@ public record GameEntity
 {
     public required int AppId { get; set; }
     public required string Name { get; set; }
-    public required bool IsVisible { get; set; } = true;
+    public int VisibilityId { get; set; }
+    public required VisibilityEntity Visibility { get; set; }
     public required string ImgIconUrl { get; set; }
     public int? MetacriticScore { get; set; }
     public required int PositiveReviews { get; set; }

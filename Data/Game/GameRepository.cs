@@ -86,6 +86,15 @@ public class GameRepository(
         existingGame.UpdatedAt = incomingGame.UpdatedAt;
         // If the game is coming from a family member, LastTimePlayed is null so it should be set by hand afterwards
         existingGame.LastTimePlayed ??= incomingGame.LastTimePlayed;
+        if (incomingGame.Status == StatusesEnum.Completed)
+        {
+            existingGame.Status = StatusesEnum.Completed;
+        }
+        // Update the visibility only if it has been set to default
+        if (existingGame.Visibility == VisibilityEnum.HiddenDefault)
+        {
+            existingGame.Visibility = incomingGame.Visibility;
+        }
     }
 
     private static void UpdateExistingGenres(List<GenreEntity> currentGenres, IEnumerable<GenreEntity> desiredGenres)

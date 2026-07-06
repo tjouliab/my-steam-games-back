@@ -8,6 +8,7 @@ public class AppDbContext : DbContext
     public DbSet<GenreEntity> Genres => Set<GenreEntity>();
     public DbSet<TagEntity> Tags => Set<TagEntity>();
     public DbSet<StatusEntity> Statuses => Set<StatusEntity>();
+    public DbSet<VisibilityEntity> Visibility => Set<VisibilityEntity>();
 
     protected override void OnConfiguring(DbContextOptionsBuilder options)
     {
@@ -65,6 +66,12 @@ public class AppDbContext : DbContext
             StatusesEnum.Finished,
             StatusesEnum.Unfinished,
             StatusesEnum.Abandoned
+        );
+
+        modelBuilder.Entity<VisibilityEntity>().HasData(
+            VisibilityEnum.Visible,
+            VisibilityEnum.HiddenManually,
+            VisibilityEnum.HiddenDefault
         );
     }
 }
