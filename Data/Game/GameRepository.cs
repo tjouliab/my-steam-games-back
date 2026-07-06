@@ -86,14 +86,14 @@ public class GameRepository(
         existingGame.UpdatedAt = incomingGame.UpdatedAt;
         // If the game is coming from a family member, LastTimePlayed is null so it should be set by hand afterwards
         existingGame.LastTimePlayed ??= incomingGame.LastTimePlayed;
-        if (incomingGame.Status == StatusesEnum.Completed)
+        if (incomingGame.StatusId == StatusesEnum.Completed.Id)
         {
-            existingGame.Status = StatusesEnum.Completed;
+            existingGame.StatusId = StatusesEnum.Completed.Id;
         }
         // Update the visibility only if it has been set to default
-        if (existingGame.Visibility == VisibilityEnum.HiddenDefault)
+        if (existingGame.VisibilityId == VisibilityEnum.HiddenDefault.Id)
         {
-            existingGame.Visibility = incomingGame.Visibility;
+            existingGame.VisibilityId = incomingGame.VisibilityId;
         }
     }
 
