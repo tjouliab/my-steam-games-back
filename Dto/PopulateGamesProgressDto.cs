@@ -1,3 +1,5 @@
+using MySteamGamesBack.Enum;
+
 namespace MySteamGamesBack.Dto;
 
 public class PopulateGamesProgressDto

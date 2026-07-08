@@ -1,7 +1,7 @@
 namespace MySteamGamesBack.Data;
 
 // No need for a Repository since the Visibility states should not change over time
-public static class VisibilityEnum
+public static class VisibilityEntityEnum
 {
     public static readonly VisibilityEntity Visible = new()
     {

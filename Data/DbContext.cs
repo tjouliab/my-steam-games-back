@@ -62,16 +62,16 @@ public class AppDbContext : DbContext
             .HasKey(g => g.Id);
 
         modelBuilder.Entity<StatusEntity>().HasData(
-            StatusesEnum.Completed,
-            StatusesEnum.Finished,
-            StatusesEnum.Unfinished,
-            StatusesEnum.Abandoned
+            StatusEntityEnum.Completed,
+            StatusEntityEnum.Finished,
+            StatusEntityEnum.Unfinished,
+            StatusEntityEnum.Abandoned
         );
 
         modelBuilder.Entity<VisibilityEntity>().HasData(
-            VisibilityEnum.Visible,
-            VisibilityEnum.HiddenManually,
-            VisibilityEnum.HiddenDefault
+            VisibilityEntityEnum.Visible,
+            VisibilityEntityEnum.HiddenManually,
+            VisibilityEntityEnum.HiddenDefault
         );
     }
 }

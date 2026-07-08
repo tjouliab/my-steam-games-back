@@ -1,7 +1,7 @@
 namespace MySteamGamesBack.Data;
 
 // No need for a Repository since the Statuses should not change over time
-public static class StatusesEnum
+public static class StatusEntityEnum
 {
     public static readonly StatusEntity Completed = new()
     {

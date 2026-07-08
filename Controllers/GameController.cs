@@ -3,6 +3,7 @@ using System.Text;
 using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 using MySteamGamesBack.Dto;
+using MySteamGamesBack.Enum;
 using MySteamGamesBack.Services;
 
 namespace MySteamGamesBack.Controllers;
@@ -31,13 +32,13 @@ public class GameController(IGameService gameService) : ControllerBase
                     ? 100
                     : processed * 100d / total;
 
-                int timeRemaining = processed == 0 
-                    ? 0 
+                int timeRemaining = processed == 0
+                    ? 0
                     : (total - processed) * timeTaken / processed;
 
                 await SendJson(webSocket, new PopulateGamesProgressDto
                 {
-                    Status = ProgressStatusEnum.Progress,
+                    Status = ProgressStatusEnum.Running,
                     Processed = processed,
                     Total = total,
                     Percent = percent,

@@ -92,7 +92,7 @@ public class GameService(
         {
             AppId = game.AppId,
             Name = game.Name,
-            VisibilityId = hasBeenStarted ? VisibilityEnum.Visible.Id : VisibilityEnum.HiddenDefault.Id,
+            VisibilityId = hasBeenStarted ? VisibilityEntityEnum.Visible.Id : VisibilityEntityEnum.HiddenDefault.Id,
             ImgIconUrl = game.ImgIconUrl,
             MetacriticScore = details.Metacritic?.Score ?? null,
             PositiveReviews = reviews.ReviewsSummary.TotalPositive,
@@ -101,7 +101,7 @@ public class GameService(
             LastTimePlayed = lastTimePlayed,
             ReleaseDate = DateTime.Parse(details.ReleaseDate.Date),
             InitialPrice = details.PriceOverview.Initial,
-            StatusId = isCompleted ? StatusesEnum.Completed.Id : null,
+            StatusId = isCompleted ? StatusEntityEnum.Completed.Id : null,
             Genres = genreEntities?.ToList() ?? [],
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow,
