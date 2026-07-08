@@ -25,6 +25,11 @@ public class AppDbContext : DbContext
             .WithMany()
             .HasForeignKey(g => g.StatusId);
 
+        modelBuilder.Entity<GameEntity>()
+            .HasOne(g => g.Visibility)
+            .WithMany()
+            .HasForeignKey(g => g.VisibilityId);
+
         // Skip navigation: declare join table GameGenre
         modelBuilder.Entity<GameEntity>()
             .HasMany(g => g.Genres)
