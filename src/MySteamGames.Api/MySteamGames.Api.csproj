@@ -16,4 +16,9 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.7" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\MySteamGames.Infrastructure\MySteamGames.Infrastructure.csproj" />
+    <ProjectReference Include="..\MySteamGames.Core\MySteamGames.Core.csproj" />
+  </ItemGroup>
+
 </Project>

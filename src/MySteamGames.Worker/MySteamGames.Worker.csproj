@@ -10,4 +10,9 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.2" />
   </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MySteamGames.Core\MySteamGames.Core.csproj" />
+    <ProjectReference Include="..\MySteamGames.Infrastructure\MySteamGames.Infrastructure.csproj" />
+  </ItemGroup>
 </Project>
