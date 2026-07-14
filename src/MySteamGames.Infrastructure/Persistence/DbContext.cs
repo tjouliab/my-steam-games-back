@@ -17,7 +17,11 @@ public class AppDbContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder options)
     {
-        options.UseSqlite("Data Source=steam-games.db");
+        var databasePath = Path.GetFullPath(
+            Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", "..", "data", "steam-games.db")
+        );
+
+        options.UseSqlite($"Data Source={databasePath}");
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
