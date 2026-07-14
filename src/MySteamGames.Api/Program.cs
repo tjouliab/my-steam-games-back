@@ -1,6 +1,9 @@
-using MySteamGamesBack.Data;
-using MySteamGamesBack.Models;
-using MySteamGamesBack.Services;
+using MySteamGames.Core.Interfaces.Repositories;
+using MySteamGames.Core.Interfaces.Services;
+using MySteamGames.Core.Models;
+using MySteamGames.Infrastructure.Persistence;
+using MySteamGames.Infrastructure.Persistence.Repositories;
+using MySteamGames.Infrastructure.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 

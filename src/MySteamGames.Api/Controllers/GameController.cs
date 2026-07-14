@@ -2,11 +2,11 @@ using System.Net.WebSockets;
 using System.Text;
 using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
-using MySteamGamesBack.Dto;
-using MySteamGamesBack.Enum;
-using MySteamGamesBack.Services;
+using MySteamGames.Core.Dto;
+using MySteamGames.Core.Enum;
+using MySteamGames.Core.Interfaces.Services;
 
-namespace MySteamGamesBack.Controllers;
+namespace MySteamGames.Api.Controllers;
 
 [ApiController]
 [Route("steam")]
