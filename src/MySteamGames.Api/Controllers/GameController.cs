@@ -24,39 +24,77 @@ public class GameController(IGameService gameService) : ControllerBase
         }
 
         using var webSocket = await HttpContext.WebSockets.AcceptWebSocketAsync();
+        using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+        var receiveLoopTask = ReceiveLoopAsync(webSocket, linkedCts);
 
-        await _gameService.PopulateGamesTable(
-            async (processed, total, timeTaken) =>
+        try
+        {
+            await _gameService.PopulateGamesTable(
+                async (processed, total, timeTaken) =>
+                {
+                    if (webSocket.State != WebSocketState.Open) return;
+
+                    double percent = total == 0
+                        ? 100
+                        : processed * 100d / total;
+
+                    int timeRemaining = processed == 0
+                        ? 0
+                        : (total - processed) * timeTaken / processed;
+
+                    await SendJson(webSocket, new PopulateGamesProgressDto
+                    {
+                        Status = ProgressStatusEnum.Running,
+                        Processed = processed,
+                        Total = total,
+                        Percent = percent,
+                        TimeTaken = timeTaken,
+                        TimeRemaining = timeRemaining
+                    }, linkedCts.Token);
+                },
+                linkedCts.Token);
+
+            if (webSocket.State == WebSocketState.Open)
             {
-                double percent = total == 0
-                    ? 100
-                    : processed * 100d / total;
-
-                int timeRemaining = processed == 0
-                    ? 0
-                    : (total - processed) * timeTaken / processed;
-
                 await SendJson(webSocket, new PopulateGamesProgressDto
                 {
-                    Status = ProgressStatusEnum.Running,
-                    Processed = processed,
-                    Total = total,
-                    Percent = percent,
-                    TimeTaken = timeTaken,
-                    TimeRemaining = timeRemaining
-                }, cancellationToken);
-            },
-            cancellationToken);
+                    Status = ProgressStatusEnum.Completed
+                }, CancellationToken.None);
 
-        await SendJson(webSocket, new PopulateGamesProgressDto
+                await webSocket.CloseAsync(
+                    WebSocketCloseStatus.NormalClosure,
+                    "Completed",
+                    CancellationToken.None);
+            }
+        }
+        catch (OperationCanceledException)
         {
-            Status = ProgressStatusEnum.Completed
-        }, cancellationToken);
-
-        await webSocket.CloseAsync(
-            WebSocketCloseStatus.NormalClosure,
-            "Completed",
-            cancellationToken);
+            if (webSocket.State == WebSocketState.Open || webSocket.State == WebSocketState.CloseReceived)
+            {
+                try
+                {
+                    await webSocket.CloseAsync(
+                        WebSocketCloseStatus.EndpointUnavailable,
+                        "Canceled",
+                        CancellationToken.None);
+                }
+                catch
+                {
+                    // Ignored: the socket is already closed or aborted.
+                }
+            }
+        }
+        finally
+        {
+            try
+            {
+                await receiveLoopTask;
+            }
+            catch
+            {
+                // Ignore errors from the receive loop once cancellation is requested.
+            }
+        }
     }
 
     private static async Task SendJson(
@@ -73,5 +111,33 @@ public class GameController(IGameService gameService) : ControllerBase
             WebSocketMessageType.Text,
             endOfMessage: true,
             cancellationToken);
+    }
+
+    private static async Task ReceiveLoopAsync(WebSocket webSocket, CancellationTokenSource linkedCts)
+    {
+        var buffer = new byte[1024];
+
+        while (!linkedCts.IsCancellationRequested && webSocket.State == WebSocketState.Open)
+        {
+            try
+            {
+                var result = await webSocket.ReceiveAsync(buffer, CancellationToken.None);
+
+                if (result.MessageType == WebSocketMessageType.Close)
+                {
+                    linkedCts.Cancel();
+                    return;
+                }
+            }
+            catch (WebSocketException)
+            {
+                linkedCts.Cancel();
+                return;
+            }
+            catch (OperationCanceledException)
+            {
+                return;
+            }
+        }
     }
 }
