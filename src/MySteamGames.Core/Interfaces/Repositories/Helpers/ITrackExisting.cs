@@ -1,4 +1,4 @@
-namespace MySteamGames.Core.Interfaces.Repositories;
+namespace MySteamGames.Core.Interfaces.Repositories.Helpers;
 
 public interface ITrackExisting<TEntity>
 {

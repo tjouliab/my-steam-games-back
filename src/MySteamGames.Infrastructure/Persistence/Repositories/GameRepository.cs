@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using MySteamGames.Core.Entities;
 using MySteamGames.Core.Interfaces.Repositories;
+using MySteamGames.Core.Interfaces.Repositories.Helpers;
 using MySteamGames.Infrastructure.Persistence.Data;
 
 namespace MySteamGames.Infrastructure.Persistence.Repositories;
