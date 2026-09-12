@@ -6,7 +6,7 @@ const gameDetailsSchema = z
     release_date: z.object({ date: z.date() }),
     metacritic: z.object({ score: z.int() }).optional(),
     genres: z.array(genreSchema).default([]),
-    price_overview: z.object({ initial: z.int().positive() }),
+    price_overview: z.object({ initial: z.int().nonnegative() }),
   })
   .transform((response) => ({
     releaseDate: response.release_date.date,

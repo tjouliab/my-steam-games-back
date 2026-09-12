@@ -4,7 +4,7 @@ import { z } from 'zod';
 export const gameIdSchema = z
   .number()
   .int()
-  .positive()
+  .nonnegative()
   .brand<typeof ZodBrand.GameId>();
 
 export type GameId = z.infer<typeof gameIdSchema>;

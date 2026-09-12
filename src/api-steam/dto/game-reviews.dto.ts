@@ -2,12 +2,12 @@ import z from 'zod';
 
 const querySummarySchema = z
   .object({
-    num_reviews: z.int().positive(),
-    review_score: z.int().positive(),
+    num_reviews: z.int().nonnegative(),
+    review_score: z.int().nonnegative(),
     review_score_desc: z.string(),
-    total_positive: z.int().positive(),
-    total_negative: z.int().positive(),
-    total_reviews: z.int().positive(),
+    total_positive: z.int().nonnegative(),
+    total_negative: z.int().nonnegative(),
+    total_reviews: z.int().nonnegative(),
   })
   .transform((query) => ({
     reviewCount: query.num_reviews,
