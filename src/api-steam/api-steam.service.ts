@@ -27,31 +27,51 @@ export class ApiSteamService {
 
   public getOwnedGames(playerId: PlayerId) {
     return this.httpService.get<GamesOwnedResponse>(
-      `${this.apiUrl}/IPlayerService/GetOwnedGames/v0001/?key=${this.apiKey}&steamid=${playerId}&format=json&include_appinfo=true&include_played_free_games=true`,
+      `${this.apiUrl}/IPlayerService/GetOwnedGames/v0001/`,
+      {
+        params: {
+          key: this.apiKey,
+          steamid: playerId,
+          format: 'json',
+          include_appinfo: true,
+          include_played_free_games: true,
+        },
+      },
     );
   }
 
   public getRecentlyPlayedGames(playerId: PlayerId) {
     return this.httpService.get<GamesRecentlyPlayedResponse>(
-      `${this.apiUrl}/IPlayerService/GetRecentlyPlayedGames/v0001/?key=${this.apiKey}&steamid=${playerId}`,
+      `${this.apiUrl}/IPlayerService/GetRecentlyPlayedGames/v0001/`,
+      { params: { key: this.apiKey, steamid: playerId } },
     );
   }
 
   public getPlayerAchievements(playerId: PlayerId, gameId: GameId) {
     return this.httpService.get<PlayerAchievementsResponse>(
-      `${this.apiUrl}/ISteamUserStats/GetPlayerAchievements/v0001/?key=${this.apiKey}&steamid=${playerId}&appid=${gameId}`,
+      `${this.apiUrl}/ISteamUserStats/GetPlayerAchievements/v0001/`,
+      { params: { key: this.apiKey, steamid: playerId, appid: gameId } },
     );
   }
 
   public getGameDetails(gameId: GameId) {
     return this.httpService.get<GameDetailsReponse>(
-      `${this.storeUrl}/api/appdetails?appids=${gameId}`,
+      `${this.storeUrl}/api/appdetails`,
+      { params: { appIds: gameId } },
     );
   }
 
   public getGameReview(gameId: GameId) {
     return this.httpService.get<GameReviewResponse>(
-      `${this.storeUrl}/appreviews/${gameId}?language=all&purchase_type=all&json=1&num_per_page=0`,
+      `${this.storeUrl}/appreviews/${gameId}`,
+      {
+        params: {
+          language: 'all',
+          purchase_type: 'all',
+          json: true,
+          num_per_page: 0,
+        },
+      },
     );
   }
 }
