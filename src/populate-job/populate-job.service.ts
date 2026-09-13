@@ -13,10 +13,10 @@ export class PopulateJobService {
   ) {}
   async isAlreadyRunningOrPending(): Promise<boolean> {
     const isRunning = await this.populateJobRepository.existsByStatus(
-      progressStatusIdSchema.parse(ProgressStatusEnum.Running.id),
+      ProgressStatusEnum.Running.id,
     );
     const isPending = await this.populateJobRepository.existsByStatus(
-      progressStatusIdSchema.parse(ProgressStatusEnum.Pending.id),
+      ProgressStatusEnum.Pending.id,
     );
     return isRunning || isPending;
   }

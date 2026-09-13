@@ -2,6 +2,8 @@ import { ZodBrand } from 'utils/brand';
 import { gameStatusEnum } from 'utils/enum/game-status.enum';
 import z from 'zod';
 
+export type GameStatusId = number & z.$brand<typeof ZodBrand.GameStatusId>;
+
 export const gameStatusIdSchema = z
   .literal([
     gameStatusEnum.Completed.id,
@@ -18,5 +20,4 @@ export const gameStatusLabelSchema = z.literal([
   gameStatusEnum.Abandoned.label,
 ]);
 
-export type GameStatusId = z.infer<typeof gameStatusIdSchema>;
 export type GameStatusLabel = z.infer<typeof gameStatusLabelSchema>;

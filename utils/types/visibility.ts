@@ -2,6 +2,8 @@ import { ZodBrand } from 'utils/brand';
 import { VisibilityEnum } from 'utils/enum/visibility.enum';
 import z from 'zod';
 
+export type VisibilityId = number & z.$brand<typeof ZodBrand.VisibilityId>;
+
 export const visibilityIdSchema = z
   .literal([
     VisibilityEnum.Visible.id,
@@ -16,5 +18,4 @@ export const visibilityLabelSchema = z.literal([
   VisibilityEnum.HiddenDefault.label,
 ]);
 
-export type VisibilityId = z.infer<typeof visibilityIdSchema>;
 export type VisibilityLabel = z.infer<typeof visibilityLabelSchema>;

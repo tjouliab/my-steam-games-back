@@ -2,6 +2,9 @@ import { ZodBrand } from 'utils/brand';
 import z from 'zod';
 import { ProgressStatusEnum } from '../enum/progress-status.enum';
 
+export type ProgressStatusId = number &
+  z.$brand<typeof ZodBrand.ProgressStatusId>;
+
 export const progressStatusIdSchema = z
   .literal([
     ProgressStatusEnum.Pending.id,
@@ -20,5 +23,4 @@ export const progressStatusLabelSchema = z.literal([
   ProgressStatusEnum.Canceled.label,
 ]);
 
-export type ProgressStatusId = z.infer<typeof progressStatusIdSchema>;
 export type ProgressStatusLabel = z.infer<typeof progressStatusLabelSchema>;

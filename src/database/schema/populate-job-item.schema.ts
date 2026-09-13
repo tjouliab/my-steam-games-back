@@ -2,10 +2,7 @@ import { integer, primaryKey, sqliteTable } from 'drizzle-orm/sqlite-core';
 import { GameId } from 'utils/types/game-id';
 import { PopulateJobId } from 'utils/types/populate-job-id';
 import { ProgressStatusEnum } from '../../../utils/enum/progress-status.enum';
-import {
-  ProgressStatusId,
-  progressStatusIdSchema,
-} from '../../../utils/types/progress-status';
+import { ProgressStatusId } from '../../../utils/types/progress-status';
 import { TableNames } from '../table-names';
 import { populateJob } from './populate-job.schema';
 import { progressStatus } from './progress-status.schema';
@@ -21,7 +18,7 @@ export const populateJobItem = sqliteTable(
       .$type<ProgressStatusId>()
       .references(() => progressStatus.id)
       .notNull()
-      .default(progressStatusIdSchema.parse(ProgressStatusEnum.Pending.id)),
+      .default(ProgressStatusEnum.Pending.id),
     attempts: integer('attemps').notNull().default(0),
   },
   (table) => [
