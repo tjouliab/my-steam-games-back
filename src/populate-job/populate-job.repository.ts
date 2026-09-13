@@ -23,7 +23,6 @@ export class PopulateJobRepository {
     const [job] = await this.databaseService.db
       .insert(populateJob)
       .values({
-        startAt: new Date(),
         totalGames,
         createdAt: new Date(),
         updatedAt: new Date(),

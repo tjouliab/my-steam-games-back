@@ -10,7 +10,7 @@ import { progressStatus } from './progress-status.schema';
 
 export const populateJob = sqliteTable(TableNames.PopulateJob, {
   id: integer('id').$type<PopulateJobId>().primaryKey({ autoIncrement: true }),
-  startAt: integer('startAt', { mode: 'timestamp' }).notNull(),
+  startAt: integer('startAt', { mode: 'timestamp' }),
   finishedAt: integer('finishedAt', { mode: 'timestamp' }),
   totalGames: integer('totalGames').notNull(),
   failedGames: integer('failedGames').notNull().default(0),
