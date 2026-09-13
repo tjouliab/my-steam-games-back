@@ -22,7 +22,8 @@ export const games = sqliteTable(TableNames.Games, {
 
   visibilityId: integer('visibilityId')
     .$type<VisibilityId>()
-    .references(() => visibility.id),
+    .references(() => visibility.id)
+    .notNull(),
   statusId: integer('statusId')
     .$type<GameStatusId>()
     .references(() => gameStatus.id),
