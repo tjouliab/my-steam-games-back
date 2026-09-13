@@ -1,10 +1,10 @@
 import { integer, sqliteTable } from 'drizzle-orm/sqlite-core';
 import { PopulateJobId } from 'utils/types/populate-job-id';
+import { ProgressStatusEnum } from '../../../utils/enum/progress-status.enum';
 import {
   ProgressStatusId,
   progressStatusIdSchema,
 } from '../../../utils/types/progress-status';
-import { ProgressStatusEnum } from '../../../utils/enum/progress-status.enum';
 import { TableNames } from '../table-names';
 import { progressStatus } from './progress-status.schema';
 

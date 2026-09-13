@@ -5,5 +5,6 @@ import { ApiSteamService } from './api-steam.service';
 @Module({
   providers: [ApiSteamService],
   imports: [HttpModule],
+  exports: [ApiSteamService],
 })
 export class ApiSteamModule {}
