@@ -1,6 +1,6 @@
 import { ZodBrand } from 'utils/brand';
-import { ProgressStatusEnum } from 'utils/enum/progress-status.enum';
 import z from 'zod';
+import { ProgressStatusEnum } from '../enum/progress-status.enum';
 
 export const progressStatusIdSchema = z
   .literal([

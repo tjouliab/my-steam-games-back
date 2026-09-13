@@ -1,5 +1,7 @@
 import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 import { GameId } from 'utils/types/game-id';
+import { GameStatusId } from 'utils/types/game-status';
+import { VisibilityId } from 'utils/types/visibility';
 import { TableNames } from '../table-names';
 import { gameStatus } from './game-status.schema';
 import { visibility } from './visibility.schema';
@@ -12,15 +14,19 @@ export const games = sqliteTable(TableNames.Games, {
   positiveReviews: integer('positiveReviews').notNull(),
   negativeReviews: integer('negativeReviews').notNull(),
   playTime: integer('playTime').notNull(),
-  lastTimePlayed: text(),
-  releaseDate: text().notNull(),
+  lastTimePlayed: text('lastTimePlayed'),
+  releaseDate: text('releaseDate').notNull(),
   initialPrice: integer('initialPrice').notNull(),
   personnalScore: integer('personnalScore'),
   personnalNotes: text('personnalNotes'),
 
-  visibilityId: integer('visbilityId').references(() => visibility.id),
-  statusId: integer('statusId').references(() => gameStatus.id),
+  visibilityId: integer('visibilityId')
+    .$type<VisibilityId>()
+    .references(() => visibility.id),
+  statusId: integer('statusId')
+    .$type<GameStatusId>()
+    .references(() => gameStatus.id),
 
-  createdAt: integer({ mode: 'timestamp' }).notNull(),
-  updatedAt: integer({ mode: 'timestamp' }).notNull(),
+  createdAt: integer('createdAt', { mode: 'timestamp' }).notNull(),
+  updatedAt: integer('updatedAt', { mode: 'timestamp' }).notNull(),
 });
