@@ -3,6 +3,7 @@ export const ZodBrand = {
   GameId: 'GameId',
   GameStatusId: 'GameStatusId',
   GenreId: 'GenreId',
+  PopulateJobId: 'PopulateJobId',
   PlayerId: 'PlayerId',
   ProgressStatusId: 'ProgressStatusId',
   TagId: 'TagId',
