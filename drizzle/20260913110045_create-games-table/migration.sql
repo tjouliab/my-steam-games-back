@@ -1,0 +1,20 @@
+CREATE TABLE `games` (
+	`id` integer PRIMARY KEY,
+	`name` text NOT NULL,
+	`imgIconUrl` text NOT NULL,
+	`metacriticScore` integer,
+	`positiveReviews` integer NOT NULL,
+	`negativeReviews` integer NOT NULL,
+	`playTime` integer NOT NULL,
+	`lastTimePlayed` text,
+	`releaseDate` text NOT NULL,
+	`initialPrice` integer NOT NULL,
+	`personnalScore` integer,
+	`personnalNotes` text,
+	`visbilityId` integer,
+	`statusId` integer,
+	`createdAt` integer NOT NULL,
+	`updatedAt` integer NOT NULL,
+	CONSTRAINT `fk_games_visbilityId_visibility_id_fk` FOREIGN KEY (`visbilityId`) REFERENCES `visibility`(`id`),
+	CONSTRAINT `fk_games_statusId_game-status_id_fk` FOREIGN KEY (`statusId`) REFERENCES `game-status`(`id`)
+);
