@@ -15,7 +15,7 @@ const gameDetailsSchema = z
     initialPrice: response.price_overview.initial,
   }));
 
-const gameDetailsReponseSchema = z.record(
+export const gameDetailsReponseSchema = z.record(
   z.string(),
   z.object({
     success: z.boolean(),
@@ -24,5 +24,3 @@ const gameDetailsReponseSchema = z.record(
 );
 
 export type GameDetailsDto = z.infer<typeof gameDetailsSchema>;
-
-export type GameDetailsReponse = z.infer<typeof gameDetailsReponseSchema>;

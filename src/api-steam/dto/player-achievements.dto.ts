@@ -12,7 +12,7 @@ const playerAchievementSchema = z
     unlockTimestamp: game.unlocktime,
   }));
 
-const playerAchievementsResponseSchema = z
+export const playerAchievementsResponseSchema = z
   .object({
     playerstats: z.object({
       steamID: z.number().int().nonnegative(),
@@ -27,7 +27,3 @@ const playerAchievementsResponseSchema = z
   }));
 
 export type PlayerAchievementDto = z.infer<typeof playerAchievementSchema>;
-
-export type PlayerAchievementsResponse = z.infer<
-  typeof playerAchievementsResponseSchema
->;

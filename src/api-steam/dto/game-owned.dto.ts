@@ -17,7 +17,7 @@ const gameOwnedSchema = z
     rtimeLastPlayed: game.rtime_last_played ?? null,
   }));
 
-const gamesOwnedResponseSchema = z
+export const gamesOwnedResponseSchema = z
   .object({
     response: z.object({
       game_count: z.number().int().nonnegative(),
@@ -30,5 +30,3 @@ const gamesOwnedResponseSchema = z
   }));
 
 export type GameOwnedDto = z.infer<typeof gameOwnedSchema>;
-
-export type GamesOwnedResponse = z.infer<typeof gamesOwnedResponseSchema>;

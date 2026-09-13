@@ -15,7 +15,7 @@ const gameRecentlyPlayedSchema = z
     imgIconUrl: game.img_icon_url,
   }));
 
-const gameRecentlyPlayedResponseSchema = z
+export const gameRecentlyPlayedResponseSchema = z
   .object({
     response: z.object({
       total_count: z.number().int().nonnegative(),
@@ -28,7 +28,3 @@ const gameRecentlyPlayedResponseSchema = z
   }));
 
 export type GameRecentlyPlayedDto = z.infer<typeof gameRecentlyPlayedSchema>;
-
-export type GamesRecentlyPlayedResponse = z.infer<
-  typeof gameRecentlyPlayedResponseSchema
->;

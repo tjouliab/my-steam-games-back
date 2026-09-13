@@ -18,7 +18,7 @@ const querySummarySchema = z
     totalReviews: query.total_reviews,
   }));
 
-const gameReviewsSchema = z
+export const gameReviewsSchema = z
   .object({
     success: z.boolean(),
     query_summary: querySummarySchema,
@@ -29,5 +29,3 @@ const gameReviewsSchema = z
   }));
 
 export type GameReviewDto = z.infer<typeof querySummarySchema>;
-
-export type GameReviewResponse = z.infer<typeof gameReviewsSchema>;
