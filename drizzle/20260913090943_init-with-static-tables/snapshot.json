@@ -1,0 +1,137 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "id": "8cdba6af-92f9-4cf9-a0b1-e09b096e8512",
+  "prevIds": [
+    "00000000-0000-0000-0000-000000000000"
+  ],
+  "ddl": [
+    {
+      "name": "game-status",
+      "entityType": "tables"
+    },
+    {
+      "name": "progress-status",
+      "entityType": "tables"
+    },
+    {
+      "name": "visibility",
+      "entityType": "tables"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "entityType": "columns",
+      "table": "game-status"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "label",
+      "entityType": "columns",
+      "table": "game-status"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "entityType": "columns",
+      "table": "progress-status"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "label",
+      "entityType": "columns",
+      "table": "progress-status"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "entityType": "columns",
+      "table": "visibility"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "label",
+      "entityType": "columns",
+      "table": "visibility"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "game-status_pk",
+      "table": "game-status",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "progress-status_pk",
+      "table": "progress-status",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "visibility_pk",
+      "table": "visibility",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "label"
+      ],
+      "nameExplicit": false,
+      "name": "game-status_label_unique",
+      "entityType": "uniques",
+      "table": "game-status"
+    },
+    {
+      "columns": [
+        "label"
+      ],
+      "nameExplicit": false,
+      "name": "progress-status_label_unique",
+      "entityType": "uniques",
+      "table": "progress-status"
+    },
+    {
+      "columns": [
+        "label"
+      ],
+      "nameExplicit": false,
+      "name": "visibility_label_unique",
+      "entityType": "uniques",
+      "table": "visibility"
+    }
+  ],
+  "renames": []
+}

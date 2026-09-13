@@ -1,8 +1,8 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Env } from 'config/env.schema';
 import { ApiKey } from 'utils/types/api-key';
+import { Env } from 'utils/types/env';
 import { GameId } from 'utils/types/game-id';
 import { PlayerId } from 'utils/types/player-id';
 import { GameDetailsReponse } from './dto/game-details.dto';

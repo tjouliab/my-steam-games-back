@@ -1,11 +1,9 @@
-// src/database/database.service.ts
-
 import { Injectable, OnModuleDestroy } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Env } from 'config/env.schema';
 import { drizzle, NodeSQLiteDatabase } from 'drizzle-orm/node-sqlite';
 import { DatabaseSync } from 'node:sqlite';
 import { EmptyRelations } from 'node_modules/drizzle-orm/index.cjs';
+import { Env } from 'utils/types/env';
 
 @Injectable()
 export class DatabaseService implements OnModuleDestroy {

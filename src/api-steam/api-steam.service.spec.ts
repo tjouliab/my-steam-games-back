@@ -1,8 +1,8 @@
 import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
-import { Env } from 'config/env.schema';
 import { of } from 'rxjs';
+import { Env } from 'utils/types/env';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { gameIdSchema } from '../../utils/types/game-id';
 import { playerIdSchema } from '../../utils/types/player-id';

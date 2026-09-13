@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { envSchema } from 'config/env.schema';
+import { envSchema } from 'utils/types/env';
 import { ApiSteamModule } from './api-steam/api-steam.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
