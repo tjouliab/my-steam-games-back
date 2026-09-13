@@ -4,6 +4,7 @@ import { drizzle, NodeSQLiteDatabase } from 'drizzle-orm/node-sqlite';
 import { DatabaseSync } from 'node:sqlite';
 import { EmptyRelations } from 'node_modules/drizzle-orm/index.cjs';
 import { Env } from 'utils/types/env';
+import { relations } from './relations/relations';
 
 @Injectable()
 export class DatabaseService implements OnModuleDestroy {
@@ -23,6 +24,7 @@ export class DatabaseService implements OnModuleDestroy {
 
     this.db = drizzle({
       client: this.sqlite,
+      relations,
     });
   }
 
