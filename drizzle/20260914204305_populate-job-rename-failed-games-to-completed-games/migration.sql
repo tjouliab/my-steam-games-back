@@ -1,0 +1,1 @@
+ALTER TABLE `populate-job` RENAME COLUMN `failedGames` TO `completedGames`;

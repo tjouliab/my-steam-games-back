@@ -10,7 +10,7 @@ export const populateJob = sqliteTable(TableNames.PopulateJob, {
   startAt: integer('startAt', { mode: 'timestamp' }),
   finishedAt: integer('finishedAt', { mode: 'timestamp' }),
   totalGames: integer('totalGames').notNull(),
-  failedGames: integer('failedGames').notNull().default(0),
+  completedGames: integer('completedGames').notNull().default(0),
 
   progressStatusId: integer('progressStatusId')
     .$type<ProgressStatusId>()
