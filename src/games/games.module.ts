@@ -9,5 +9,6 @@ import { GamesService } from './games.service';
   controllers: [GamesController],
   providers: [GamesService, GamesRepository],
   imports: [ApiSteamModule, PopulateJobModule],
+  exports: [GamesService],
 })
 export class GamesModule {}

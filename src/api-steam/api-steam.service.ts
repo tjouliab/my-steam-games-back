@@ -9,6 +9,7 @@ import {
   GameDetailsDto,
   gameDetailsReponseSchema,
 } from './dto/game-details.dto';
+import { GameFamilyOwnedMap } from './dto/game-family-owned-map';
 import { GameOwnedDto, gamesOwnedResponseSchema } from './dto/game-owned.dto';
 import {
   GameRecentlyPlayedDto,
@@ -27,6 +28,8 @@ export class ApiSteamService {
 
   private readonly apiKey: ApiKey;
   private readonly playerId: PlayerId;
+  private readonly familyPlayerIds: PlayerId[];
+  private readonly allPlayerIds: PlayerId[];
 
   constructor(
     private readonly httpService: HttpService,
@@ -34,6 +37,11 @@ export class ApiSteamService {
   ) {
     this.apiKey = this.configService.get('STEAM_API_KEY', { infer: true });
     this.playerId = this.configService.get('PLAYER_ID', { infer: true });
+    this.familyPlayerIds = this.configService.get('FAMILY_PLAYERS_ID', {
+      infer: true,
+    });
+    // Own player's game stats should come first
+    this.allPlayerIds = [this.playerId, ...this.familyPlayerIds];
   }
 
   async getOwnedGames(playerId: PlayerId): Promise<GameOwnedDto[]> {
@@ -51,6 +59,21 @@ export class ApiSteamService {
     );
 
     return gamesOwnedResponseSchema.parse(data).games;
+  }
+
+  async getFamilyOwnedGamesMap(): Promise<GameFamilyOwnedMap> {
+    const gamesMap: GameFamilyOwnedMap = new Map();
+
+    for (const id of this.allPlayerIds) {
+      const ownedGames = await this.getOwnedGames(id);
+      for (const game of ownedGames) {
+        if (gamesMap.has(game.gameId)) continue;
+
+        gamesMap.set(game.gameId, game);
+      }
+    }
+
+    return gamesMap;
   }
 
   async getRecentlyPlayedGames(): Promise<GameRecentlyPlayedDto[]> {
