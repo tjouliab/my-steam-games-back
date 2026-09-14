@@ -5,7 +5,7 @@ import { visibilityIdSchema } from 'utils/types/visibility';
 import z from 'zod';
 import { games } from '../schema';
 
-const gameSchema = createSelectSchema(games, {
+export const gameSchema = createSelectSchema(games, {
   id: gameIdSchema,
   visibilityId: visibilityIdSchema,
   statusId: gameStatusIdSchema,

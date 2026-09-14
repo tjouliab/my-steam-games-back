@@ -26,12 +26,14 @@ export class ApiSteamService {
   private readonly storeUrl = 'https://store.steampowered.com';
 
   private readonly apiKey: ApiKey;
+  private readonly playerId: PlayerId;
 
   constructor(
     private readonly httpService: HttpService,
     private readonly configService: ConfigService<Env>,
   ) {
     this.apiKey = this.configService.get('STEAM_API_KEY', { infer: true });
+    this.playerId = this.configService.get('PLAYER_ID', { infer: true });
   }
 
   async getOwnedGames(playerId: PlayerId): Promise<GameOwnedDto[]> {
@@ -51,18 +53,26 @@ export class ApiSteamService {
     return gamesOwnedResponseSchema.parse(data).games;
   }
 
-  async getRecentlyPlayedGames(
-    playerId: PlayerId,
-  ): Promise<GameRecentlyPlayedDto[]> {
+  async getRecentlyPlayedGames(): Promise<GameRecentlyPlayedDto[]> {
     const { data } = await this.httpService.axiosRef.get(
       `${this.apiUrl}/IPlayerService/GetRecentlyPlayedGames/v0001/`,
-      { params: { key: this.apiKey, steamid: playerId } },
+      { params: { key: this.apiKey, steamid: this.playerId } },
     );
 
     return gameRecentlyPlayedResponseSchema.parse(data).games;
   }
 
-  async getPlayerAchievements(
+  async getFullGameInfo(gameId: GameId) {
+    const [achievements, details, review] = await Promise.all([
+      this.getPlayerAchievements(this.playerId, gameId),
+      this.getGameDetails(gameId),
+      this.getGameReview(gameId),
+    ]);
+
+    return { achievements, details, review };
+  }
+
+  private async getPlayerAchievements(
     playerId: PlayerId,
     gameId: GameId,
   ): Promise<PlayerAchievementDto[]> {
@@ -74,7 +84,7 @@ export class ApiSteamService {
     return playerAchievementsResponseSchema.parse(data).achievements;
   }
 
-  async getGameDetails(gameId: GameId): Promise<GameDetailsDto> {
+  private async getGameDetails(gameId: GameId): Promise<GameDetailsDto> {
     const { data } = await this.httpService.axiosRef.get(
       `${this.storeUrl}/api/appdetails`,
       { params: { appIds: gameId } },
@@ -83,7 +93,7 @@ export class ApiSteamService {
     return gameDetailsReponseSchema.parse(data)[gameId].data;
   }
 
-  async getGameReview(gameId: GameId): Promise<GameReviewDto> {
+  private async getGameReview(gameId: GameId): Promise<GameReviewDto> {
     const { data } = await this.httpService.axiosRef.get(
       `${this.storeUrl}/appreviews/${gameId}`,
       {
