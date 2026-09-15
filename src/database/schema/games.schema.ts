@@ -28,6 +28,6 @@ export const games = sqliteTable(TableNames.Games, {
     .$type<GameStatusId>()
     .references(() => gameStatus.id),
 
-  createdAt: integer('createdAt', { mode: 'timestamp' }).notNull(),
-  updatedAt: integer('updatedAt', { mode: 'timestamp' }).notNull(),
+  createdAt: text('createdAt').notNull(),
+  updatedAt: text('updatedAt').notNull(),
 });

@@ -9,7 +9,7 @@ export class GamesRepository {
   constructor(private readonly databaseService: DatabaseService) {}
 
   async upsert(newGame: GameEntity): Promise<GameEntity> {
-    const now = new Date();
+    const now = new Date().toISOString();
 
     const [insertedGame] = await this.databaseService.db
       .insert(games)

@@ -42,6 +42,7 @@ export class GamesService {
       await this.apiSteamService.getFullGameInfo(game.gameId);
 
     const isCompleted = achievements.every((a) => a.achieved);
+    const now = new Date().toISOString();
 
     return gameSchema.parse({
       id: game.gameId,
@@ -51,14 +52,18 @@ export class GamesService {
       positiveReviews: review.totalPositive,
       negativeReviews: review.totalNegative,
       playTime: game.playtimeForever,
-      lastTimePlayed: game.rtimeLastPlayed ?? null,
-      releaseDate: details.releaseDate,
+      lastTimePlayed: game.rtimeLastPlayed?.toString() ?? null,
+      releaseDate: details.releaseDate.toISOString(),
       initialPrice: details.initialPrice,
+      personnalScore: null,
+      personnalNotes: null,
       visibilityId:
         game.playtimeForever > 0
           ? VisibilityEnum.Visible.id
           : VisibilityEnum.HiddenDefault.id,
       statusId: isCompleted ? gameStatusEnum.Completed.id : null,
+      createdAt: now,
+      updatedAt: now,
     });
   }
 }

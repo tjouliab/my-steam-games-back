@@ -8,7 +8,7 @@ import { games } from '../schema';
 export const gameSchema = createSelectSchema(games, {
   id: gameIdSchema,
   visibilityId: visibilityIdSchema,
-  statusId: gameStatusIdSchema,
+  statusId: gameStatusIdSchema.nullable(),
 });
 
 export type GameEntity = z.infer<typeof gameSchema>;

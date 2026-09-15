@@ -37,12 +37,13 @@ export class PopulateJobRepository {
   }
 
   async insert(totalGames: number): Promise<PopulateJobEntity> {
+    const now = new Date().toISOString();
     const [job] = await this.databaseService.db
       .insert(populateJob)
       .values({
         totalGames,
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        createdAt: now,
+        updatedAt: now,
       })
       .returning();
 
@@ -61,13 +62,19 @@ export class PopulateJobRepository {
   async setStartAt(jobId: PopulateJobId, startAt: Date): Promise<void> {
     await this.databaseService.db
       .update(populateJob)
-      .set({ startAt, updatedAt: new Date() })
+      .set({
+        startAt: startAt.toISOString(),
+        updatedAt: new Date().toISOString(),
+      })
       .where(eq(populateJob.id, jobId));
   }
   async setFinishedAt(jobId: PopulateJobId, finishedAt: Date): Promise<void> {
     await this.databaseService.db
       .update(populateJob)
-      .set({ finishedAt, updatedAt: new Date() })
+      .set({
+        finishedAt: finishedAt.toISOString(),
+        updatedAt: new Date().toISOString(),
+      })
       .where(eq(populateJob.id, jobId));
   }
 
@@ -77,7 +84,7 @@ export class PopulateJobRepository {
   ): Promise<void> {
     await this.databaseService.db
       .update(populateJob)
-      .set({ progressStatusId: status, updatedAt: new Date() })
+      .set({ progressStatusId: status, updatedAt: new Date().toISOString() })
       .where(eq(populateJob.id, jobId));
   }
 }
