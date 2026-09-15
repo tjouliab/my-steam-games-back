@@ -1,7 +1,6 @@
 import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
-import { of } from 'rxjs';
 import { Env } from 'utils/types/env';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { gameIdSchema } from '../../utils/types/game-id';
@@ -15,9 +14,10 @@ describe('ApiSteamService', () => {
   let service: ApiSteamService;
 
   const httpServiceMock = {
-    get: vi.fn(),
+    axiosRef: {
+      get: vi.fn(),
+    },
   };
-
   const configServiceMock = {
     get: vi.fn(),
   };
@@ -25,7 +25,11 @@ describe('ApiSteamService', () => {
   beforeEach(async () => {
     vi.clearAllMocks();
 
-    configServiceMock.get.mockReturnValue('test-api-key');
+    configServiceMock.get.mockImplementation((key) => {
+      if (key === 'STEAM_API_KEY') return 'test-api-key';
+      if (key === 'PLAYER_ID') return playerId;
+      if (key === 'FAMILY_PLAYERS_ID') return [];
+    });
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -45,14 +49,16 @@ describe('ApiSteamService', () => {
   });
 
   describe('getOwnedGames', () => {
-    it('should call Steam API with the correct URL', () => {
-      httpServiceMock.get.mockReturnValue(of({ data: {} }));
+    it('should call Steam API with the correct URL', async () => {
+      httpServiceMock.axiosRef.get.mockResolvedValue({
+        data: { response: { game_count: 0, games: [] } },
+      });
 
-      service.getOwnedGames(playerId);
+      await service.getOwnedGames(playerId);
 
-      expect(httpServiceMock.get).toHaveBeenCalledOnce();
+      expect(httpServiceMock.axiosRef.get).toHaveBeenCalledOnce();
 
-      expect(httpServiceMock.get).toHaveBeenCalledWith(
+      expect(httpServiceMock.axiosRef.get).toHaveBeenCalledWith(
         'https://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/',
         {
           params: {
@@ -68,12 +74,14 @@ describe('ApiSteamService', () => {
   });
 
   describe('getRecentlyPlayedGames', () => {
-    it('should call Steam API with the correct URL', () => {
-      httpServiceMock.get.mockReturnValue(of({ data: {} }));
+    it('should call Steam API with the correct URL', async () => {
+      httpServiceMock.axiosRef.get.mockResolvedValue({
+        data: { response: { total_count: 0, games: [] } },
+      });
 
-      service.getRecentlyPlayedGames(playerId);
+      await service.getRecentlyPlayedGames();
 
-      expect(httpServiceMock.get).toHaveBeenCalledWith(
+      expect(httpServiceMock.axiosRef.get).toHaveBeenCalledWith(
         'https://api.steampowered.com/IPlayerService/GetRecentlyPlayedGames/v0001/',
         {
           params: {
@@ -85,13 +93,47 @@ describe('ApiSteamService', () => {
     });
   });
 
-  describe('getPlayerAchievements', () => {
-    it('should call Steam API with the correct URL', () => {
-      httpServiceMock.get.mockReturnValue(of({ data: {} }));
+  describe('getFullGameInfo', () => {
+    it('sould call Steam API with the correct URL', async () => {
+      httpServiceMock.axiosRef.get
+        .mockResolvedValueOnce({
+          data: {
+            playerstats: {
+              steamID: 1,
+              gameName: 'Test game',
+              achievements: [],
+            },
+          },
+        })
+        .mockResolvedValueOnce({
+          data: {
+            [gameId]: {
+              success: true,
+              data: {
+                release_date: { date: new Date() },
+                genres: [],
+                price_overview: { initial: 0 },
+              },
+            },
+          },
+        })
+        .mockResolvedValueOnce({
+          data: {
+            success: true,
+            query_summary: {
+              num_reviews: 0,
+              review_score: 0,
+              review_score_desc: '',
+              total_positive: 0,
+              total_negative: 0,
+              total_reviews: 0,
+            },
+          },
+        });
 
-      service.getPlayerAchievements(playerId, gameId);
+      await service.getFullGameInfo(gameId);
 
-      expect(httpServiceMock.get).toHaveBeenCalledWith(
+      expect(httpServiceMock.axiosRef.get).toHaveBeenCalledWith(
         'https://api.steampowered.com/ISteamUserStats/GetPlayerAchievements/v0001/',
         {
           params: {
@@ -101,16 +143,8 @@ describe('ApiSteamService', () => {
           },
         },
       );
-    });
-  });
 
-  describe('getGameDetails', () => {
-    it('should call Steam Store API with the correct URL', () => {
-      httpServiceMock.get.mockReturnValue(of({ data: {} }));
-
-      service.getGameDetails(gameId);
-
-      expect(httpServiceMock.get).toHaveBeenCalledWith(
+      expect(httpServiceMock.axiosRef.get).toHaveBeenCalledWith(
         'https://store.steampowered.com/api/appdetails',
         {
           params: {
@@ -118,16 +152,8 @@ describe('ApiSteamService', () => {
           },
         },
       );
-    });
-  });
 
-  describe('getGameReview', () => {
-    it('should call Steam Store API with the correct URL', () => {
-      httpServiceMock.get.mockReturnValue(of({ data: {} }));
-
-      service.getGameReview(gameId);
-
-      expect(httpServiceMock.get).toHaveBeenCalledWith(
+      expect(httpServiceMock.axiosRef.get).toHaveBeenCalledWith(
         'https://store.steampowered.com/appreviews/730',
         {
           params: {
