@@ -29,7 +29,10 @@ export class TaskSchedulingService {
   async handleCron(): Promise<void> {
     console.log('handleCron started');
     const pendingJob = await this.populateJobService.getPendingOrFailed();
-    if (pendingJob == null) return;
+    if (pendingJob == null) {
+      console.log('handleCron no pending job');
+      return;
+    }
 
     const pendingJobItems =
       await this.populateJobItemService.getPendingOrFailedById(pendingJob.id);
@@ -83,11 +86,12 @@ export class TaskSchedulingService {
 
       await this.populateJobService.incrementCompletedGames(jobItem.jobId);
       await this.populateJobItemService.setCompleted(jobItem);
-    } catch {
+    } catch (err) {
       if (jobItem.attempts >= this.maxAttempts) {
         await this.populateJobItemService.setCanceled(jobItem);
       } else {
         await this.populateJobItemService.setFailed(jobItem);
+        throw err;
       }
     }
   }
