@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { and, eq, sql } from 'drizzle-orm';
+import { and, eq, or, sql } from 'drizzle-orm';
 import { PopulateJobItemEntity } from 'src/database/entity/populate-job-item.entity';
 import { ProgressStatusEnum } from 'utils/enum/progress-status.enum';
 import { GameId } from 'utils/types/game-id';
@@ -21,8 +21,10 @@ export class PopulateJobItemRepository {
       .where(
         and(
           eq(populateJobItem.jobId, id),
-          eq(populateJobItem.progressStatusId, ProgressStatusEnum.Pending.id),
-          eq(populateJobItem.progressStatusId, ProgressStatusEnum.Failed.id),
+          or(
+            eq(populateJobItem.progressStatusId, ProgressStatusEnum.Pending.id),
+            eq(populateJobItem.progressStatusId, ProgressStatusEnum.Failed.id),
+          ),
         ),
       );
   }
