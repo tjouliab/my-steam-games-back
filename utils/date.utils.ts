@@ -2,9 +2,7 @@ export abstract class DateUtils {
   static parseSteamDate(value: string): Temporal.PlainDate {
     const date = new Date(`${value} UTC`);
 
-    if (Number.isNaN(date.getTime())) {
-      throw new Error(`Invalid Steam release date: ${value}`);
-    }
+    if (Number.isNaN(date.getTime())) return Temporal.Now.plainDateISO();
 
     return Temporal.PlainDate.from({
       year: date.getUTCFullYear(),

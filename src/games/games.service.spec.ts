@@ -96,7 +96,7 @@ describe('GamesService', () => {
         negativeReviews: review.totalNegative,
         playTime: game.playtimeForever,
         lastTimePlayed: game.rtimeLastPlayed?.toString(),
-        releaseDate: details.releaseDate.toISOString(),
+        releaseDate: details.releaseDate.toString(),
         initialPrice: details.initialPrice,
         visibilityId: VisibilityEnum.Visible.id,
         statusId: gameStatusEnum.Completed.id,

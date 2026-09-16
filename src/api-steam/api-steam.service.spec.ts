@@ -94,46 +94,56 @@ describe('ApiSteamService', () => {
   });
 
   describe('getFullGameInfo', () => {
-    it('sould call Steam API with the correct URL', async () => {
-      httpServiceMock.axiosRef.get
-        .mockResolvedValueOnce({
-          data: {
-            playerstats: {
-              steamID: '1',
-              gameName: 'Test game',
-              achievements: [
-                {
-                  apiname: 'First Achievement',
-                  achieved: 1,
-                  unlocktime: 1787820493,
-                },
-                {
-                  apiname: 'First Achievement',
-                  achieved: 0,
-                  unlocktime: 1788017151,
-                },
-              ],
-            },
-          },
-        })
-        .mockResolvedValueOnce({
-          data: {
-            [gameId]: {
-              success: true,
-              data: {
-                release_date: { date: '7 Aug, 2007' },
-                genres: [
+    it('should call Steam API with the correct URL', async () => {
+      httpServiceMock.axiosRef.get.mockImplementation((url, options) => {
+        if (url.includes('GetPlayerAchievements')) {
+          return Promise.resolve({
+            data: {
+              playerstats: {
+                steamID: '1',
+                gameName: 'Test game',
+                achievements: [
                   {
-                    id: '2',
-                    description: 'Strategy',
+                    apiname: 'First Achievement',
+                    achieved: 1,
+                    unlocktime: 1787820493,
+                  },
+                  {
+                    apiname: 'First Achievement',
+                    achieved: 0,
+                    unlocktime: 1788017151,
                   },
                 ],
-                price_overview: { initial: 0 },
               },
             },
-          },
-        })
-        .mockResolvedValueOnce({
+          });
+        }
+
+        if (url.endsWith('/api/appdetails')) {
+          const isFrench = options.params.cc === 'fr';
+
+          return Promise.resolve({
+            data: {
+              [gameId]: {
+                success: true,
+                data: {
+                  release_date: {
+                    date: isFrench ? '7 aout 2007' : '7 Aug, 2007',
+                  },
+                  genres: [
+                    {
+                      id: '2',
+                      description: isFrench ? 'Stratégie' : 'Strategy',
+                    },
+                  ],
+                  price_overview: { initial: 0 },
+                },
+              },
+            },
+          });
+        }
+
+        return Promise.resolve({
           data: {
             success: 1,
             query_summary: {
@@ -146,6 +156,7 @@ describe('ApiSteamService', () => {
             },
           },
         });
+      });
 
       await service.getFullGameInfo(gameId);
 
@@ -163,9 +174,14 @@ describe('ApiSteamService', () => {
       expect(httpServiceMock.axiosRef.get).toHaveBeenCalledWith(
         'https://store.steampowered.com/api/appdetails',
         {
-          params: {
-            appids: 730,
-          },
+          params: { appids: 730, cc: 'fr', l: 'french' },
+        },
+      );
+
+      expect(httpServiceMock.axiosRef.get).toHaveBeenCalledWith(
+        'https://store.steampowered.com/api/appdetails',
+        {
+          params: { appids: 730, cc: 'en', l: 'english' },
         },
       );
 
