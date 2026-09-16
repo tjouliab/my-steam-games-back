@@ -132,4 +132,43 @@ describe('TaskSchedulingService', () => {
     expect(populateJobServiceMock.setCompleted).toHaveBeenCalledWith(job);
     expect(populateJobServiceMock.setFailed).not.toHaveBeenCalled();
   });
+
+  it('should cancel an item when Steam rejects its achievements request', async () => {
+    const item = createJobItem();
+    populateJobServiceMock.getPendingOrFailed.mockResolvedValue(job);
+    populateJobItemServiceMock.getPendingOrFailedById.mockResolvedValue([item]);
+    apiSteamServiceMock.getFamilyOwnedGamesMap.mockResolvedValue(
+      new Map([[game.gameId, game]]),
+    );
+    gamesServiceMock.saveEnrichedGame.mockRejectedValue({
+      isAxiosError: true,
+      response: { status: 400 },
+    });
+
+    await service.handleCron();
+
+    expect(populateJobItemServiceMock.setCanceled).toHaveBeenCalledWith(item);
+    expect(populateJobItemServiceMock.setFailed).not.toHaveBeenCalled();
+    expect(populateJobServiceMock.setCompleted).toHaveBeenCalledWith(job);
+    expect(populateJobServiceMock.setFailed).not.toHaveBeenCalledWith(job);
+  });
+
+  it('should fail the job when Steam rate limits an item below the attempt limit', async () => {
+    const item = createJobItem({ attempts: 1 });
+    populateJobServiceMock.getPendingOrFailed.mockResolvedValue(job);
+    populateJobItemServiceMock.getPendingOrFailedById.mockResolvedValue([item]);
+    apiSteamServiceMock.getFamilyOwnedGamesMap.mockResolvedValue(
+      new Map([[game.gameId, game]]),
+    );
+    gamesServiceMock.saveEnrichedGame.mockRejectedValue({
+      isAxiosError: true,
+      response: { status: 429 },
+    });
+
+    await service.handleCron();
+
+    expect(populateJobItemServiceMock.setFailed).toHaveBeenCalledWith(item);
+    expect(populateJobServiceMock.setFailed).toHaveBeenCalledWith(job);
+    expect(populateJobServiceMock.setCompleted).not.toHaveBeenCalled();
+  });
 });

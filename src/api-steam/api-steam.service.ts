@@ -85,7 +85,11 @@ export class ApiSteamService {
     return gameRecentlyPlayedResponseSchema.parse(data).games;
   }
 
-  async getFullGameInfo(gameId: GameId) {
+  async getFullGameInfo(gameId: GameId): Promise<{
+    achievements: PlayerAchievementDto[];
+    details: GameDetailsDto;
+    review: GameReviewDto;
+  }> {
     const [achievements, details, review] = await Promise.all([
       this.getPlayerAchievements(this.playerId, gameId),
       this.getGameDetails(gameId),

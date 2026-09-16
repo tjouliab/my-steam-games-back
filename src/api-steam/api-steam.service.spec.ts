@@ -100,6 +100,7 @@ describe('ApiSteamService', () => {
           return Promise.resolve({
             data: {
               playerstats: {
+                success: true,
                 steamID: '1',
                 gameName: 'Test game',
                 achievements: [

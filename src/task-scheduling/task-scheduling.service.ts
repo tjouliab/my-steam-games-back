@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Cron, CronExpression } from '@nestjs/schedule';
+import axios from 'axios';
 import { ApiSteamService } from 'src/api-steam/api-steam.service';
 import { GameFamilyOwnedMap } from 'src/api-steam/dto/game-family-owned-map';
 import { PopulateJobItemEntity } from 'src/database/entity/populate-job-item.entity';
@@ -42,7 +43,7 @@ export class TaskSchedulingService {
     try {
       await this.processPendingJobItems(pendingJobItems);
     } catch (err) {
-      console.error(`handleCron error: ${err}`);
+      console.error(`handleCron error: ${JSON.stringify(err, null, 2)}`);
       await this.populateJobService.setFailed(pendingJob);
       return;
     }
@@ -87,6 +88,11 @@ export class TaskSchedulingService {
       await this.populateJobService.incrementCompletedGames(jobItem.jobId);
       await this.populateJobItemService.setCompleted(jobItem);
     } catch (err) {
+      if (axios.isAxiosError(err) && err.response?.status === 400) {
+        await this.populateJobItemService.setCanceled(jobItem);
+        return;
+      }
+
       if (jobItem.attempts >= this.maxAttempts) {
         await this.populateJobItemService.setCanceled(jobItem);
       } else {
