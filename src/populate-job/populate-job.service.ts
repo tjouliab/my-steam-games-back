@@ -3,9 +3,9 @@ import { PopulateJobEntity } from 'src/database/entity/populate-job.entity';
 import { PopulateJobItemService } from 'src/populate-job-item/populate-job-item.service';
 import { ProgressStatusEnum } from 'utils/enum/progress-status.enum';
 import { GameId } from 'utils/types/game-id';
+import { PopulateJobId } from 'utils/types/populate-job-id';
 import { ProgressStatusId } from 'utils/types/progress-status';
 import { PopulateJobRepository } from './populate-job.repository';
-import { PopulateJobId } from 'utils/types/populate-job-id';
 
 @Injectable()
 export class PopulateJobService {
@@ -39,18 +39,24 @@ export class PopulateJobService {
   }
 
   async setRunning(job: PopulateJobEntity): Promise<void> {
-    await this.populateJobRepository.setStartAt(job.id, new Date());
+    await this.populateJobRepository.setStartAt(job.id, Temporal.Now.instant());
     return this.setStatus(job, ProgressStatusEnum.Running.id);
   }
   async setCompleted(job: PopulateJobEntity): Promise<void> {
-    await this.populateJobRepository.setFinishedAt(job.id, new Date());
+    await this.populateJobRepository.setFinishedAt(
+      job.id,
+      Temporal.Now.instant(),
+    );
     return this.setStatus(job, ProgressStatusEnum.Completed.id);
   }
   async setFailed(job: PopulateJobEntity): Promise<void> {
     return this.setStatus(job, ProgressStatusEnum.Failed.id);
   }
   async setCanceled(job: PopulateJobEntity): Promise<void> {
-    await this.populateJobRepository.setFinishedAt(job.id, new Date());
+    await this.populateJobRepository.setFinishedAt(
+      job.id,
+      Temporal.Now.instant(),
+    );
     return this.setStatus(job, ProgressStatusEnum.Canceled.id);
   }
 

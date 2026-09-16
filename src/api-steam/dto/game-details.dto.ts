@@ -1,3 +1,4 @@
+import { DateUtils } from 'utils/date.utils';
 import z from 'zod';
 import { genreSchema } from './genre.dto';
 
@@ -9,7 +10,7 @@ const gameDetailsSchema = z
     price_overview: z.object({ initial: z.int().nonnegative() }),
   })
   .transform((response) => ({
-    releaseDate: new Date(response.release_date.date),
+    releaseDate: DateUtils.parseSteamDate(response.release_date.date),
     metacriticScore: response?.metacritic?.score,
     genres: response.genres,
     initialPrice: response.price_overview.initial,

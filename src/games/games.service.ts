@@ -4,6 +4,7 @@ import { ApiSteamService } from 'src/api-steam/api-steam.service';
 import { GameOwnedDto } from 'src/api-steam/dto/game-owned.dto';
 import { GameEntity, gameSchema } from 'src/database/entity/game.entity';
 import { PopulateJobService } from 'src/populate-job/populate-job.service';
+import { DateUtils } from 'utils/date.utils';
 import { gameStatusEnum } from 'utils/enum/game-status.enum';
 import { VisibilityEnum } from 'utils/enum/visibility.enum';
 import { Env } from 'utils/types/env';
@@ -42,7 +43,7 @@ export class GamesService {
       await this.apiSteamService.getFullGameInfo(game.gameId);
 
     const isCompleted = achievements.every((a) => a.achieved);
-    const now = new Date().toISOString();
+    const now = DateUtils.now();
 
     return gameSchema.parse({
       id: game.gameId,
@@ -53,7 +54,7 @@ export class GamesService {
       negativeReviews: review.totalNegative,
       playTime: game.playtimeForever,
       lastTimePlayed: game.rtimeLastPlayed?.toString() ?? null,
-      releaseDate: details.releaseDate.toISOString(),
+      releaseDate: details.releaseDate.toString(),
       initialPrice: details.initialPrice,
       personnalScore: null,
       personnalNotes: null,

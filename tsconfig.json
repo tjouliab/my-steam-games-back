@@ -1,12 +1,16 @@
 {
   "compilerOptions": {
     "module": "nodenext",
+    "moduleResolution": "nodenext",
     "declaration": true,
     "removeComments": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
-    "target": "es2024",
+    "target": "ES2025",
+    "lib": [
+      "ESNext"
+    ],
     "sourceMap": true,
     "outDir": "./dist",
     "baseUrl": "./",

@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { eq, or, sql } from 'drizzle-orm';
+import { DateUtils } from 'utils/date.utils';
 import { ProgressStatusEnum } from 'utils/enum/progress-status.enum';
 import { PopulateJobId } from 'utils/types/populate-job-id';
 import { ProgressStatusId } from 'utils/types/progress-status';
@@ -37,7 +38,7 @@ export class PopulateJobRepository {
   }
 
   async insert(totalGames: number): Promise<PopulateJobEntity> {
-    const now = new Date().toISOString();
+    const now = DateUtils.now();
     const [job] = await this.databaseService.db
       .insert(populateJob)
       .values({
@@ -59,21 +60,27 @@ export class PopulateJobRepository {
       .where(eq(populateJob.id, jobId));
   }
 
-  async setStartAt(jobId: PopulateJobId, startAt: Date): Promise<void> {
+  async setStartAt(
+    jobId: PopulateJobId,
+    startAt: Temporal.Instant,
+  ): Promise<void> {
     await this.databaseService.db
       .update(populateJob)
       .set({
-        startAt: startAt.toISOString(),
-        updatedAt: new Date().toISOString(),
+        startAt: startAt.toString(),
+        updatedAt: DateUtils.now(),
       })
       .where(eq(populateJob.id, jobId));
   }
-  async setFinishedAt(jobId: PopulateJobId, finishedAt: Date): Promise<void> {
+  async setFinishedAt(
+    jobId: PopulateJobId,
+    finishedAt: Temporal.Instant,
+  ): Promise<void> {
     await this.databaseService.db
       .update(populateJob)
       .set({
-        finishedAt: finishedAt.toISOString(),
-        updatedAt: new Date().toISOString(),
+        finishedAt: finishedAt.toString(),
+        updatedAt: DateUtils.now(),
       })
       .where(eq(populateJob.id, jobId));
   }
@@ -84,7 +91,7 @@ export class PopulateJobRepository {
   ): Promise<void> {
     await this.databaseService.db
       .update(populateJob)
-      .set({ progressStatusId: status, updatedAt: new Date().toISOString() })
+      .set({ progressStatusId: status, updatedAt: DateUtils.now() })
       .where(eq(populateJob.id, jobId));
   }
 }

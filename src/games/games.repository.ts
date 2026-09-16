@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { GameEntity } from 'src/database/entity/game.entity';
+import { DateUtils } from 'utils/date.utils';
 import { VisibilityEnum } from 'utils/enum/visibility.enum';
 import { DatabaseService } from '../database/database.service';
 import { games } from '../database/schema';
@@ -9,7 +10,7 @@ export class GamesRepository {
   constructor(private readonly databaseService: DatabaseService) {}
 
   async upsert(newGame: GameEntity): Promise<GameEntity> {
-    const now = new Date().toISOString();
+    const now = DateUtils.now();
 
     const [insertedGame] = await this.databaseService.db
       .insert(games)
