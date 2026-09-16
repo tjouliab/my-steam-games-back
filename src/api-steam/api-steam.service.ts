@@ -108,12 +108,20 @@ export class ApiSteamService {
   }
 
   private async getGameDetails(gameId: GameId): Promise<GameDetailsDto> {
-    const { data } = await this.httpService.axiosRef.get(
+    const { data: dataFr } = await this.httpService.axiosRef.get(
       `${this.storeUrl}/api/appdetails`,
-      { params: { appids: gameId } },
+      { params: { appids: gameId, cc: 'fr', l: 'french' } },
     );
 
-    return gameDetailsReponseSchema.parse(data)[gameId].data;
+    const { data: dataEn } = await this.httpService.axiosRef.get(
+      `${this.storeUrl}/api/appdetails`,
+      { params: { appids: gameId, cc: 'en', l: 'english' } },
+    );
+
+    const parsedDataFr = gameDetailsReponseSchema.parse(dataFr)[gameId].data;
+    const parsedDataEn = gameDetailsReponseSchema.parse(dataEn)[gameId].data;
+
+    return { ...parsedDataFr, releaseDate: parsedDataEn.releaseDate };
   }
 
   private async getGameReview(gameId: GameId): Promise<GameReviewDto> {
