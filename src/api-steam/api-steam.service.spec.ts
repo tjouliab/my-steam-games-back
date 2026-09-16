@@ -99,9 +99,20 @@ describe('ApiSteamService', () => {
         .mockResolvedValueOnce({
           data: {
             playerstats: {
-              steamID: 1,
+              steamID: '1',
               gameName: 'Test game',
-              achievements: [],
+              achievements: [
+                {
+                  apiname: 'First Achievement',
+                  achieved: 1,
+                  unlocktime: 1787820493,
+                },
+                {
+                  apiname: 'First Achievement',
+                  achieved: 0,
+                  unlocktime: 1788017151,
+                },
+              ],
             },
           },
         })
@@ -110,8 +121,13 @@ describe('ApiSteamService', () => {
             [gameId]: {
               success: true,
               data: {
-                release_date: { date: new Date() },
-                genres: [],
+                release_date: { date: '7 Aug, 2007' },
+                genres: [
+                  {
+                    id: '2',
+                    description: 'Strategy',
+                  },
+                ],
                 price_overview: { initial: 0 },
               },
             },
@@ -119,7 +135,7 @@ describe('ApiSteamService', () => {
         })
         .mockResolvedValueOnce({
           data: {
-            success: true,
+            success: 1,
             query_summary: {
               num_reviews: 0,
               review_score: 0,
@@ -148,7 +164,7 @@ describe('ApiSteamService', () => {
         'https://store.steampowered.com/api/appdetails',
         {
           params: {
-            appIds: 730,
+            appids: 730,
           },
         },
       );
@@ -157,7 +173,7 @@ describe('ApiSteamService', () => {
         'https://store.steampowered.com/appreviews/730',
         {
           params: {
-            json: true,
+            json: 1,
             language: 'all',
             num_per_page: 0,
             purchase_type: 'all',

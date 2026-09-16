@@ -110,7 +110,7 @@ export class ApiSteamService {
   private async getGameDetails(gameId: GameId): Promise<GameDetailsDto> {
     const { data } = await this.httpService.axiosRef.get(
       `${this.storeUrl}/api/appdetails`,
-      { params: { appIds: gameId } },
+      { params: { appids: gameId } },
     );
 
     return gameDetailsReponseSchema.parse(data)[gameId].data;
@@ -123,7 +123,7 @@ export class ApiSteamService {
         params: {
           language: 'all',
           purchase_type: 'all',
-          json: true,
+          json: 1,
           num_per_page: 0,
         },
       },

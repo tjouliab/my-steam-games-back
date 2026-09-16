@@ -3,13 +3,13 @@ import { genreSchema } from './genre.dto';
 
 const gameDetailsSchema = z
   .object({
-    release_date: z.object({ date: z.date() }),
+    release_date: z.object({ date: z.string().nonempty() }),
     metacritic: z.object({ score: z.int() }).optional(),
     genres: z.array(genreSchema).default([]),
     price_overview: z.object({ initial: z.int().nonnegative() }),
   })
   .transform((response) => ({
-    releaseDate: response.release_date.date,
+    releaseDate: new Date(response.release_date.date),
     metacriticScore: response?.metacritic?.score,
     genres: response.genres,
     initialPrice: response.price_overview.initial,

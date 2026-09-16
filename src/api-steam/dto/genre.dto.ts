@@ -3,7 +3,7 @@ import z from 'zod';
 
 export const genreSchema = z
   .object({
-    id: genreIdSchema,
+    id: z.preprocess(Number, genreIdSchema),
     description: z.string().nonempty(),
   })
   .transform((genre) => ({

@@ -3,19 +3,19 @@ import { z } from 'zod';
 const playerAchievementSchema = z
   .object({
     apiname: z.string().nonempty(),
-    achieved: z.boolean(),
+    achieved: z.literal([0, 1]),
     unlocktime: z.number().int().nonnegative(),
   })
   .transform((game) => ({
     achievementName: game.apiname,
-    achieved: game.achieved,
+    achieved: Boolean(game.achieved),
     unlockTimestamp: game.unlocktime,
   }));
 
 export const playerAchievementsResponseSchema = z
   .object({
     playerstats: z.object({
-      steamID: z.number().int().nonnegative(),
+      steamID: z.string().regex(/^\d+$/),
       gameName: z.string().nonempty(),
       achievements: z.array(playerAchievementSchema).default([]),
     }),

@@ -20,11 +20,11 @@ const querySummarySchema = z
 
 export const gameReviewsSchema = z
   .object({
-    success: z.boolean(),
+    success: z.literal([0, 1]),
     query_summary: querySummarySchema,
   })
   .transform((response) => ({
-    success: response.success,
+    success: Boolean(response.success),
     gameReview: response.query_summary,
   }));
 
