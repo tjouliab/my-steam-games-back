@@ -29,6 +29,29 @@ export class PopulateJobItemRepository {
       );
   }
 
+  async getCompletedOrCanceledById(
+    id: PopulateJobId,
+  ): Promise<PopulateJobItemEntity[]> {
+    return this.databaseService.db
+      .select()
+      .from(populateJobItem)
+      .where(
+        and(
+          eq(populateJobItem.jobId, id),
+          or(
+            eq(
+              populateJobItem.progressStatusId,
+              ProgressStatusEnum.Completed.id,
+            ),
+            eq(
+              populateJobItem.progressStatusId,
+              ProgressStatusEnum.Canceled.id,
+            ),
+          ),
+        ),
+      );
+  }
+
   async insertMany(jobId: PopulateJobId, gameIds: GameId[]): Promise<void> {
     const jobItems = gameIds.map((gameId) => ({
       jobId,

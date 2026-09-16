@@ -51,7 +51,7 @@ export class PopulateJobRepository {
     return job;
   }
 
-  async incrementCompletedGames(jobId: PopulateJobId): Promise<void> {
+  async updateCompletedGames(jobId: PopulateJobId): Promise<void> {
     await this.databaseService.db
       .update(populateJob)
       .set({
@@ -67,7 +67,7 @@ export class PopulateJobRepository {
     await this.databaseService.db
       .update(populateJob)
       .set({
-        startAt: startAt.toString(),
+        startAt: startAt.toString({ smallestUnit: 'second' }),
         updatedAt: DateUtils.now(),
       })
       .where(eq(populateJob.id, jobId));
@@ -79,7 +79,7 @@ export class PopulateJobRepository {
     await this.databaseService.db
       .update(populateJob)
       .set({
-        finishedAt: finishedAt.toString(),
+        finishedAt: finishedAt.toString({ smallestUnit: 'second' }),
         updatedAt: DateUtils.now(),
       })
       .where(eq(populateJob.id, jobId));
@@ -92,6 +92,16 @@ export class PopulateJobRepository {
     await this.databaseService.db
       .update(populateJob)
       .set({ progressStatusId: status, updatedAt: DateUtils.now() })
+      .where(eq(populateJob.id, jobId));
+  }
+
+  async setCompletedGames(
+    jobId: PopulateJobId,
+    completedGames: number,
+  ): Promise<void> {
+    await this.databaseService.db
+      .update(populateJob)
+      .set({ completedGames, updatedAt: DateUtils.now() })
       .where(eq(populateJob.id, jobId));
   }
 }

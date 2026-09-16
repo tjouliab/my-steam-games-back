@@ -34,8 +34,11 @@ export class PopulateJobService {
     await this.populateJobItemService.registerGames(job.id, gameIds);
   }
 
-  async incrementCompletedGames(id: PopulateJobId): Promise<void> {
-    return this.populateJobRepository.incrementCompletedGames(id);
+  async updateCompletedGames(id: PopulateJobId): Promise<void> {
+    const completed =
+      await this.populateJobItemService.getCompletedOrCanceledById(id);
+
+    return this.populateJobRepository.setCompletedGames(id, completed.length);
   }
 
   async setRunning(job: PopulateJobEntity): Promise<void> {

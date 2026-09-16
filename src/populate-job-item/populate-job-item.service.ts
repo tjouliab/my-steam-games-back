@@ -17,6 +17,11 @@ export class PopulateJobItemService {
   ): Promise<PopulateJobItemEntity[]> {
     return this.populateJobItemRepository.getPendingOrFailedById(id);
   }
+  async getCompletedOrCanceledById(
+    id: PopulateJobId,
+  ): Promise<PopulateJobItemEntity[]> {
+    return this.populateJobItemRepository.getCompletedOrCanceledById(id);
+  }
 
   async registerGames(jobId: PopulateJobId, gameIds: GameId[]): Promise<void> {
     return this.populateJobItemRepository.insertMany(jobId, gameIds);

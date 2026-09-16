@@ -85,10 +85,13 @@ export class TaskSchedulingService {
     try {
       await this.gameService.saveEnrichedGame(ownedGame);
 
-      await this.populateJobService.incrementCompletedGames(jobItem.jobId);
       await this.populateJobItemService.setCompleted(jobItem);
+      await this.populateJobService.updateCompletedGames(jobItem.jobId);
     } catch (err) {
-      if (axios.isAxiosError(err) && err.response?.status === 400) {
+      if (
+        axios.isAxiosError(err) &&
+        (err.response.status === 400 || err.response.status === 500)
+      ) {
         await this.populateJobItemService.setCanceled(jobItem);
         return;
       }
