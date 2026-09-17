@@ -53,7 +53,7 @@ export class GamesService {
       positiveReviews: review.totalPositive,
       negativeReviews: review.totalNegative,
       playTime: game.playtimeForever,
-      lastTimePlayed: game.rtimeLastPlayed?.toString() ?? null,
+      lastTimePlayed: game.rtimeLastPlayed ?? null,
       releaseDate: details.releaseDate.toString(),
       initialPrice: details.initialPrice,
       personnalScore: null,

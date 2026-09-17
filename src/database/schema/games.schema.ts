@@ -14,7 +14,7 @@ export const games = sqliteTable(TableNames.Games, {
   positiveReviews: integer('positiveReviews').notNull(),
   negativeReviews: integer('negativeReviews').notNull(),
   playTime: integer('playTime').notNull(),
-  lastTimePlayed: text('lastTimePlayed'),
+  lastTimePlayed: integer('lastTimePlayed'),
   releaseDate: text('releaseDate').notNull(),
   initialPrice: integer('initialPrice').notNull(),
   personnalScore: integer('personnalScore'),

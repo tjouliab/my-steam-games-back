@@ -1,0 +1,726 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "id": "54a5886f-0c86-43ca-9b79-322f0a5a7af4",
+  "prevIds": [
+    "c88ecc2d-4b67-4af6-87a8-20dbb724d4d2"
+  ],
+  "ddl": [
+    {
+      "name": "game-status",
+      "entityType": "tables"
+    },
+    {
+      "name": "game-to-genre",
+      "entityType": "tables"
+    },
+    {
+      "name": "game-to-tag",
+      "entityType": "tables"
+    },
+    {
+      "name": "games",
+      "entityType": "tables"
+    },
+    {
+      "name": "genres",
+      "entityType": "tables"
+    },
+    {
+      "name": "populate-job-item",
+      "entityType": "tables"
+    },
+    {
+      "name": "populate-job",
+      "entityType": "tables"
+    },
+    {
+      "name": "progress-status",
+      "entityType": "tables"
+    },
+    {
+      "name": "tags",
+      "entityType": "tables"
+    },
+    {
+      "name": "visibility",
+      "entityType": "tables"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "entityType": "columns",
+      "table": "game-status"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "label",
+      "entityType": "columns",
+      "table": "game-status"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "gameId",
+      "entityType": "columns",
+      "table": "game-to-genre"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "genreId",
+      "entityType": "columns",
+      "table": "game-to-genre"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "gameId",
+      "entityType": "columns",
+      "table": "game-to-tag"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "tagId",
+      "entityType": "columns",
+      "table": "game-to-tag"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "entityType": "columns",
+      "table": "games"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "name",
+      "entityType": "columns",
+      "table": "games"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "imgIconUrl",
+      "entityType": "columns",
+      "table": "games"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "metacriticScore",
+      "entityType": "columns",
+      "table": "games"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "positiveReviews",
+      "entityType": "columns",
+      "table": "games"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "negativeReviews",
+      "entityType": "columns",
+      "table": "games"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "playTime",
+      "entityType": "columns",
+      "table": "games"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "lastTimePlayed",
+      "entityType": "columns",
+      "table": "games"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "releaseDate",
+      "entityType": "columns",
+      "table": "games"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "initialPrice",
+      "entityType": "columns",
+      "table": "games"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "personnalScore",
+      "entityType": "columns",
+      "table": "games"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "personnalNotes",
+      "entityType": "columns",
+      "table": "games"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "visibilityId",
+      "entityType": "columns",
+      "table": "games"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "statusId",
+      "entityType": "columns",
+      "table": "games"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "createdAt",
+      "entityType": "columns",
+      "table": "games"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "updatedAt",
+      "entityType": "columns",
+      "table": "games"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "entityType": "columns",
+      "table": "genres"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "description",
+      "entityType": "columns",
+      "table": "genres"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "jobId",
+      "entityType": "columns",
+      "table": "populate-job-item"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "gameId",
+      "entityType": "columns",
+      "table": "populate-job-item"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "1",
+      "generated": null,
+      "name": "progressStatusId",
+      "entityType": "columns",
+      "table": "populate-job-item"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "0",
+      "generated": null,
+      "name": "attemps",
+      "entityType": "columns",
+      "table": "populate-job-item"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": true,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "entityType": "columns",
+      "table": "populate-job"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "startAt",
+      "entityType": "columns",
+      "table": "populate-job"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "finishedAt",
+      "entityType": "columns",
+      "table": "populate-job"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "totalGames",
+      "entityType": "columns",
+      "table": "populate-job"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "0",
+      "generated": null,
+      "name": "completedGames",
+      "entityType": "columns",
+      "table": "populate-job"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "1",
+      "generated": null,
+      "name": "progressStatusId",
+      "entityType": "columns",
+      "table": "populate-job"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "createdAt",
+      "entityType": "columns",
+      "table": "populate-job"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "updatedAt",
+      "entityType": "columns",
+      "table": "populate-job"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "entityType": "columns",
+      "table": "progress-status"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "label",
+      "entityType": "columns",
+      "table": "progress-status"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": true,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "entityType": "columns",
+      "table": "tags"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "description",
+      "entityType": "columns",
+      "table": "tags"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "entityType": "columns",
+      "table": "visibility"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "label",
+      "entityType": "columns",
+      "table": "visibility"
+    },
+    {
+      "columns": [
+        "gameId"
+      ],
+      "tableTo": "games",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "NO ACTION",
+      "nameExplicit": false,
+      "name": "fk_game-to-genre_gameId_games_id_fk",
+      "entityType": "fks",
+      "table": "game-to-genre"
+    },
+    {
+      "columns": [
+        "genreId"
+      ],
+      "tableTo": "genres",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "NO ACTION",
+      "nameExplicit": false,
+      "name": "fk_game-to-genre_genreId_genres_id_fk",
+      "entityType": "fks",
+      "table": "game-to-genre"
+    },
+    {
+      "columns": [
+        "gameId"
+      ],
+      "tableTo": "games",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "NO ACTION",
+      "nameExplicit": false,
+      "name": "fk_game-to-tag_gameId_games_id_fk",
+      "entityType": "fks",
+      "table": "game-to-tag"
+    },
+    {
+      "columns": [
+        "tagId"
+      ],
+      "tableTo": "tags",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "NO ACTION",
+      "nameExplicit": false,
+      "name": "fk_game-to-tag_tagId_tags_id_fk",
+      "entityType": "fks",
+      "table": "game-to-tag"
+    },
+    {
+      "columns": [
+        "visibilityId"
+      ],
+      "tableTo": "visibility",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "NO ACTION",
+      "nameExplicit": false,
+      "name": "fk_games_visbilityId_visibility_id_fk",
+      "entityType": "fks",
+      "table": "games"
+    },
+    {
+      "columns": [
+        "statusId"
+      ],
+      "tableTo": "game-status",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "NO ACTION",
+      "nameExplicit": false,
+      "name": "fk_games_statusId_game-status_id_fk",
+      "entityType": "fks",
+      "table": "games"
+    },
+    {
+      "columns": [
+        "jobId"
+      ],
+      "tableTo": "populate-job",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "NO ACTION",
+      "nameExplicit": false,
+      "name": "fk_PopulateJobItem_jobId_PopulateJob_id_fk",
+      "entityType": "fks",
+      "table": "populate-job-item"
+    },
+    {
+      "columns": [
+        "progressStatusId"
+      ],
+      "tableTo": "progress-status",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "NO ACTION",
+      "nameExplicit": false,
+      "name": "fk_PopulateJobItem_progressStatusId_progress-status_id_fk",
+      "entityType": "fks",
+      "table": "populate-job-item"
+    },
+    {
+      "columns": [
+        "progressStatusId"
+      ],
+      "tableTo": "progress-status",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "NO ACTION",
+      "nameExplicit": false,
+      "name": "fk_PopulateJob_progressStatusId_progress-status_id_fk",
+      "entityType": "fks",
+      "table": "populate-job"
+    },
+    {
+      "columns": [
+        "gameId",
+        "genreId"
+      ],
+      "nameExplicit": false,
+      "name": "game-to-genre_pk",
+      "entityType": "pks",
+      "table": "game-to-genre"
+    },
+    {
+      "columns": [
+        "gameId",
+        "tagId"
+      ],
+      "nameExplicit": false,
+      "name": "game-to-tag_pk",
+      "entityType": "pks",
+      "table": "game-to-tag"
+    },
+    {
+      "columns": [
+        "jobId",
+        "gameId"
+      ],
+      "nameExplicit": false,
+      "name": "PopulateJobItem_pk",
+      "entityType": "pks",
+      "table": "populate-job-item"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "game-status_pk",
+      "table": "game-status",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "games_pk",
+      "table": "games",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "genres_pk",
+      "table": "genres",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "PopulateJob_pk",
+      "table": "populate-job",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "progress-status_pk",
+      "table": "progress-status",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "tags_pk",
+      "table": "tags",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "visibility_pk",
+      "table": "visibility",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "label"
+      ],
+      "nameExplicit": false,
+      "name": "game-status_label_unique",
+      "entityType": "uniques",
+      "table": "game-status"
+    },
+    {
+      "columns": [
+        "label"
+      ],
+      "nameExplicit": false,
+      "name": "progress-status_label_unique",
+      "entityType": "uniques",
+      "table": "progress-status"
+    },
+    {
+      "columns": [
+        "label"
+      ],
+      "nameExplicit": false,
+      "name": "visibility_label_unique",
+      "entityType": "uniques",
+      "table": "visibility"
+    }
+  ],
+  "renames": []
+}
