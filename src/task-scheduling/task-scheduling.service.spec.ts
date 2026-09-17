@@ -171,4 +171,32 @@ describe('TaskSchedulingService', () => {
     expect(populateJobServiceMock.setFailed).toHaveBeenCalledWith(job);
     expect(populateJobServiceMock.setCompleted).not.toHaveBeenCalled();
   });
+
+  it('should fail a previously failed job again after a rate limit', async () => {
+    const failedJob = {
+      ...job,
+      progressStatusId: ProgressStatusEnum.Failed.id,
+    };
+    const item = createJobItem({
+      progressStatusId: ProgressStatusEnum.Failed.id,
+      attempts: 1,
+    });
+    populateJobServiceMock.getPendingOrFailed.mockResolvedValue(failedJob);
+    populateJobItemServiceMock.getPendingOrFailedById.mockResolvedValue([item]);
+    apiSteamServiceMock.getFamilyOwnedGamesMap.mockResolvedValue(
+      new Map([[game.gameId, game]]),
+    );
+    gamesServiceMock.saveEnrichedGame.mockRejectedValue({
+      isAxiosError: true,
+      response: { status: 429 },
+    });
+
+    await service.handleCron();
+
+    expect(populateJobItemServiceMock.setRunning).toHaveBeenCalledWith(item);
+    expect(populateJobItemServiceMock.setFailed).toHaveBeenCalledWith(item);
+    expect(populateJobServiceMock.setRunning).toHaveBeenCalledWith(failedJob);
+    expect(populateJobServiceMock.setFailed).toHaveBeenCalledWith(failedJob);
+    expect(populateJobServiceMock.setCompleted).not.toHaveBeenCalled();
+  });
 });

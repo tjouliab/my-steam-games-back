@@ -50,10 +50,11 @@ export class PopulateJobItemService {
   ): Promise<void> {
     if (jobItem.progressStatusId === status) return;
 
-    return this.populateJobItemRepository.setStatus(
+    await this.populateJobItemRepository.setStatus(
       jobItem.jobId,
       jobItem.gameId,
       status,
     );
+    jobItem.progressStatusId = status;
   }
 }

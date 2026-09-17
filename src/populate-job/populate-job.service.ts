@@ -69,6 +69,7 @@ export class PopulateJobService {
   ): Promise<void> {
     if (job.progressStatusId === status) return;
 
-    return this.populateJobRepository.setStatus(job.id, status);
+    await this.populateJobRepository.setStatus(job.id, status);
+    job.progressStatusId = status;
   }
 }
