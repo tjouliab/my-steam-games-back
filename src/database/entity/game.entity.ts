@@ -4,11 +4,16 @@ import { gameStatusIdSchema } from 'utils/types/game-status';
 import { visibilityIdSchema } from 'utils/types/visibility';
 import z from 'zod';
 import { games } from '../schema';
+import { genreSchema } from './genre.entity';
 
-export const gameSchema = createSelectSchema(games, {
+const gameRecordSchema = createSelectSchema(games, {
   id: gameIdSchema,
   visibilityId: visibilityIdSchema,
   statusId: gameStatusIdSchema.nullable(),
+});
+
+export const gameSchema = gameRecordSchema.extend({
+  genres: z.array(genreSchema),
 });
 
 export type GameEntity = z.infer<typeof gameSchema>;

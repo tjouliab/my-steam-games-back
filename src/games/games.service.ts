@@ -35,7 +35,7 @@ export class GamesService {
 
   async saveEnrichedGame(game: GameOwnedDto): Promise<void> {
     const enrichedGame = await this.fetchEnrichedGame(game);
-    await this.gamesRepository.upsert(enrichedGame);
+    this.gamesRepository.save(enrichedGame);
   }
 
   private async fetchEnrichedGame(game: GameOwnedDto): Promise<GameEntity> {
@@ -45,7 +45,7 @@ export class GamesService {
     const isCompleted = achievements.every((a) => a.achieved);
     const now = DateUtils.now();
 
-    return gameSchema.parse({
+    const gameEntity = gameSchema.parse({
       id: game.gameId,
       name: game.name,
       imgIconUrl: game.imgIconUrl,
@@ -65,6 +65,9 @@ export class GamesService {
       statusId: isCompleted ? gameStatusEnum.Completed.id : null,
       createdAt: now,
       updatedAt: now,
+      genres: details.genres,
     });
+
+    return gameEntity;
   }
 }

@@ -7,7 +7,7 @@ export const genreSchema = z
     description: z.string().nonempty(),
   })
   .transform((genre) => ({
-    genreId: genre.id,
+    id: genre.id,
     description: genre.description,
   }));
 

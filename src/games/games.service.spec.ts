@@ -20,7 +20,9 @@ describe('GamesService', () => {
   const details: GameDetailsDto = { ...gameDetailsFixture };
   const review: GameReviewDto = { ...gameReviewFixture };
 
-  const gamesRepositoryMock = { upsert: vi.fn() };
+  const gamesRepositoryMock = {
+    save: vi.fn(),
+  };
   const apiSteamServiceMock = {
     getOwnedGames: vi.fn(),
     getFullGameInfo: vi.fn(),
@@ -32,7 +34,6 @@ describe('GamesService', () => {
   const configServiceMock = {
     get: vi.fn().mockReturnValue('76561198000000000'),
   };
-
   let service: GamesService;
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -86,22 +87,25 @@ describe('GamesService', () => {
 
     await service.saveEnrichedGame(game);
 
-    expect(gamesRepositoryMock.upsert).toHaveBeenCalledWith(
-      expect.objectContaining({
-        id: game.gameId,
-        name: game.name,
-        imgIconUrl: game.imgIconUrl,
-        metacriticScore: details.metacriticScore,
-        positiveReviews: review.totalPositive,
-        negativeReviews: review.totalNegative,
-        playTime: game.playtimeForever,
-        lastTimePlayed: game.rtimeLastPlayed?.toString(),
-        releaseDate: details.releaseDate.toString(),
-        initialPrice: details.initialPrice,
-        visibilityId: VisibilityEnum.Visible.id,
-        statusId: gameStatusEnum.Completed.id,
-      }),
-    );
+    expect(gamesRepositoryMock.save).toHaveBeenCalledWith({
+      id: game.gameId,
+      name: game.name,
+      imgIconUrl: game.imgIconUrl,
+      metacriticScore: details.metacriticScore,
+      positiveReviews: review.totalPositive,
+      negativeReviews: review.totalNegative,
+      playTime: game.playtimeForever,
+      lastTimePlayed: game.rtimeLastPlayed,
+      releaseDate: details.releaseDate.toString(),
+      initialPrice: details.initialPrice,
+      personnalScore: null,
+      personnalNotes: null,
+      visibilityId: VisibilityEnum.Visible.id,
+      statusId: gameStatusEnum.Completed.id,
+      createdAt: expect.any(String),
+      updatedAt: expect.any(String),
+      genres: details.genres,
+    });
   });
 
   it('should use defaults for an unplayed unfinished game', async () => {
@@ -116,12 +120,13 @@ describe('GamesService', () => {
 
     await service.saveEnrichedGame(unplayedGame);
 
-    expect(gamesRepositoryMock.upsert).toHaveBeenCalledWith(
+    expect(gamesRepositoryMock.save).toHaveBeenCalledWith(
       expect.objectContaining({
         metacriticScore: null,
         lastTimePlayed: null,
         visibilityId: VisibilityEnum.HiddenDefault.id,
         statusId: null,
+        genres: details.genres,
       }),
     );
   });

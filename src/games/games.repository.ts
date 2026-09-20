@@ -1,18 +1,42 @@
 import { Injectable } from '@nestjs/common';
+import { eq, sql } from 'drizzle-orm';
 import { GameEntity } from 'src/database/entity/game.entity';
+import { GenreEntity } from 'src/database/entity/genre.entity';
 import { DateUtils } from 'utils/date.utils';
 import { VisibilityEnum } from 'utils/enum/visibility.enum';
+import { DatabaseExecutor } from 'utils/types/database-executor';
+import { GameId } from 'utils/types/game-id';
+import { GenreId } from 'utils/types/genre-id';
 import { DatabaseService } from '../database/database.service';
-import { games } from '../database/schema';
+import { gameToGenre, games, genres } from '../database/schema';
+
+type GameRecord = Omit<GameEntity, 'genres'>;
 
 @Injectable()
 export class GamesRepository {
   constructor(private readonly databaseService: DatabaseService) {}
 
-  async upsert(newGame: GameEntity): Promise<GameEntity> {
+  save(game: GameEntity): GameEntity {
+    const { genres: gameGenres, ...gameRecord } = game;
+
+    return this.databaseService.db.transaction((tx) => {
+      const savedGame = this.upsertGame(gameRecord, tx);
+
+      this.upsertGenres(gameGenres, tx);
+      this.replaceGenres(
+        savedGame.id,
+        gameGenres.map((genre) => genre.id),
+        tx,
+      );
+
+      return { ...savedGame, genres: gameGenres };
+    });
+  }
+
+  private upsertGame(newGame: GameRecord, db: DatabaseExecutor): GameRecord {
     const now = DateUtils.now();
 
-    const [insertedGame] = await this.databaseService.db
+    const insertedGame = db
       .insert(games)
       .values({
         ...newGame,
@@ -41,8 +65,38 @@ export class GamesRepository {
           updatedAt: now,
         },
       })
-      .returning();
+      .returning()
+      .get();
 
     return insertedGame;
+  }
+
+  private upsertGenres(gameGenres: GenreEntity[], db: DatabaseExecutor): void {
+    if (gameGenres.length === 0) return;
+
+    db.insert(genres)
+      .values(gameGenres)
+      .onConflictDoUpdate({
+        target: genres.id,
+        set: {
+          // "excluded" represents the line we are trying to insert
+          description: sql`excluded.description`,
+        },
+      })
+      .run();
+  }
+
+  private replaceGenres(
+    gameId: GameId,
+    genreIds: GenreId[],
+    db: DatabaseExecutor,
+  ): void {
+    db.delete(gameToGenre).where(eq(gameToGenre.gameId, gameId)).run();
+
+    if (genreIds.length === 0) return;
+
+    db.insert(gameToGenre)
+      .values(genreIds.map((genreId) => ({ gameId, genreId })))
+      .run();
   }
 }
