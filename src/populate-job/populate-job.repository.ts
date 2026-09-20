@@ -60,18 +60,6 @@ export class PopulateJobRepository {
       .where(eq(populateJob.id, jobId));
   }
 
-  async setStartAt(
-    jobId: PopulateJobId,
-    startAt: Temporal.Instant,
-  ): Promise<void> {
-    await this.databaseService.db
-      .update(populateJob)
-      .set({
-        startAt: startAt.toString({ smallestUnit: 'second' }),
-        updatedAt: DateUtils.now(),
-      })
-      .where(eq(populateJob.id, jobId));
-  }
   async setFinishedAt(
     jobId: PopulateJobId,
     finishedAt: Temporal.Instant,
