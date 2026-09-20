@@ -2,7 +2,6 @@ import { Injectable, OnModuleDestroy } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { drizzle, NodeSQLiteDatabase } from 'drizzle-orm/node-sqlite';
 import { DatabaseSync } from 'node:sqlite';
-import { EmptyRelations } from 'node_modules/drizzle-orm/index.cjs';
 import { Env } from 'utils/types/env';
 import { relations } from './relations/relations';
 
@@ -10,7 +9,7 @@ import { relations } from './relations/relations';
 export class DatabaseService implements OnModuleDestroy {
   private readonly sqlite: DatabaseSync;
 
-  public readonly db: NodeSQLiteDatabase<EmptyRelations>;
+  public readonly db: NodeSQLiteDatabase<typeof relations>;
 
   constructor(private readonly configService: ConfigService<Env>) {
     const databaseFile = this.configService.get('DB_FILE_NAME', {

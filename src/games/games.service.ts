@@ -23,6 +23,9 @@ export class GamesService {
   ) {
     this.playerId = this.configService.get('PLAYER_ID', { infer: true });
   }
+  async get(): Promise<GameEntity[]> {
+    return this.gamesRepository.get();
+  }
 
   async populateTable(): Promise<void> {
     if (await this.populateJobService.isAlreadyRunningOrPending()) return;

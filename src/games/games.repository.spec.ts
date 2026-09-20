@@ -5,6 +5,7 @@ import { DatabaseSync } from 'node:sqlite';
 import { DatabaseService } from 'src/database/database.service';
 import { GameEntity } from 'src/database/entity/game.entity';
 import { GenreEntity } from 'src/database/entity/genre.entity';
+import { relations } from 'src/database/relations/relations';
 import { gameToGenre, genres } from 'src/database/schema';
 import { gameStatusEnum } from 'utils/enum/game-status.enum';
 import { VisibilityEnum } from 'utils/enum/visibility.enum';
@@ -15,7 +16,7 @@ import { GamesRepository } from './games.repository';
 
 describe('GamesRepository', () => {
   let sqlite: DatabaseSync;
-  let db: NodeSQLiteDatabase;
+  let db: NodeSQLiteDatabase<typeof relations>;
   let repository: GamesRepository;
 
   const game: GameEntity = {
@@ -50,7 +51,7 @@ describe('GamesRepository', () => {
   beforeEach(() => {
     sqlite = new DatabaseSync(':memory:');
     sqlite.exec('PRAGMA foreign_keys = ON');
-    db = drizzle({ client: sqlite });
+    db = drizzle({ client: sqlite, relations });
     migrate(db, {
       migrationsFolder: path.resolve(__dirname, '../../drizzle'),
     });
@@ -77,5 +78,14 @@ describe('GamesRepository', () => {
     expect(db.select().from(gameToGenre).all()).toEqual([
       { gameId: game.id, genreId: updatedStrategyGenre.id },
     ]);
+  });
+
+  it('gets games with their genres', async () => {
+    const savedGame = repository.save({
+      ...game,
+      genres: [actionGenre, strategyGenre],
+    });
+
+    await expect(repository.get()).resolves.toEqual([savedGame]);
   });
 });

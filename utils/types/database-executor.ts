@@ -1,8 +1,9 @@
-import { EmptyRelations } from 'drizzle-orm';
 import {
   NodeSQLiteDatabase,
   NodeSQLiteTransaction,
 } from 'drizzle-orm/node-sqlite';
+import type { relations } from 'src/database/relations/relations';
 
 export type DatabaseExecutor =
-  NodeSQLiteDatabase<EmptyRelations> | NodeSQLiteTransaction<EmptyRelations>;
+  | NodeSQLiteDatabase<typeof relations>
+  | NodeSQLiteTransaction<typeof relations>;

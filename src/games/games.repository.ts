@@ -1,6 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { eq, sql } from 'drizzle-orm';
-import { GameEntity } from 'src/database/entity/game.entity';
+import {
+  GameEntity,
+  GameRecord,
+  gameSchema,
+} from 'src/database/entity/game.entity';
 import { GenreEntity } from 'src/database/entity/genre.entity';
 import { DateUtils } from 'utils/date.utils';
 import { VisibilityEnum } from 'utils/enum/visibility.enum';
@@ -10,11 +14,19 @@ import { GenreId } from 'utils/types/genre-id';
 import { DatabaseService } from '../database/database.service';
 import { gameToGenre, games, genres } from '../database/schema';
 
-type GameRecord = Omit<GameEntity, 'genres'>;
-
 @Injectable()
 export class GamesRepository {
   constructor(private readonly databaseService: DatabaseService) {}
+
+  async get(): Promise<GameEntity[]> {
+    const gameEntities = await this.databaseService.db.query.games.findMany({
+      with: {
+        genres: true,
+      },
+    });
+
+    return gameSchema.array().parse(gameEntities);
+  }
 
   save(game: GameEntity): GameEntity {
     const { genres: gameGenres, ...gameRecord } = game;

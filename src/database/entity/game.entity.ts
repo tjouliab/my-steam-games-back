@@ -16,4 +16,5 @@ export const gameSchema = gameRecordSchema.extend({
   genres: z.array(genreSchema),
 });
 
+export type GameRecord = z.infer<typeof gameRecordSchema>;
 export type GameEntity = z.infer<typeof gameSchema>;
