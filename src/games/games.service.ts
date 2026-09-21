@@ -19,7 +19,7 @@ export class GamesService {
     private readonly gamesRepository: GamesRepository,
     private readonly apiSteamService: ApiSteamService,
     private readonly populateJobService: PopulateJobService,
-    private readonly configService: ConfigService<Env>,
+    private readonly configService: ConfigService<Env, true>,
   ) {
     this.playerId = this.configService.get('PLAYER_ID', { infer: true });
   }

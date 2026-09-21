@@ -19,7 +19,7 @@ export class TaskSchedulingService {
     private readonly gameService: GamesService,
     private readonly populateJobService: PopulateJobService,
     private readonly populateJobItemService: PopulateJobItemService,
-    private readonly configService: ConfigService<Env>,
+    private readonly configService: ConfigService<Env, true>,
   ) {
     this.maxAttempts = this.configService.get('MAX_JOB_ITEM_ATTEMPTS', {
       infer: true,
@@ -83,14 +83,14 @@ export class TaskSchedulingService {
 
     await this.populateJobItemService.setRunning(jobItem);
     try {
-      await this.gameService.saveEnrichedGame(ownedGame);
+      await this.gameService.saveEnrichedGame(ownedGame!);
 
       await this.populateJobItemService.setCompleted(jobItem);
       await this.populateJobService.updateCompletedGames(jobItem.jobId);
     } catch (err) {
       if (
         axios.isAxiosError(err) &&
-        (err.response.status === 400 || err.response.status === 500)
+        (err.response?.status === 400 || err.response?.status === 500)
       ) {
         await this.populateJobItemService.setCanceled(jobItem);
         return;

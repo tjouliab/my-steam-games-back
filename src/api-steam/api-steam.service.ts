@@ -33,7 +33,7 @@ export class ApiSteamService {
 
   constructor(
     private readonly httpService: HttpService,
-    private readonly configService: ConfigService<Env>,
+    private readonly configService: ConfigService<Env, true>,
   ) {
     this.apiKey = this.configService.get('STEAM_API_KEY', { infer: true });
     this.playerId = this.configService.get('PLAYER_ID', { infer: true });
@@ -108,7 +108,7 @@ export class ApiSteamService {
       { params: { key: this.apiKey, steamid: playerId, appid: gameId } },
     );
 
-    return playerAchievementsResponseSchema.parse(data).achievements;
+    return playerAchievementsResponseSchema.parse(data).achievements ?? [];
   }
 
   private async getGameDetails(gameId: GameId): Promise<GameDetailsDto> {

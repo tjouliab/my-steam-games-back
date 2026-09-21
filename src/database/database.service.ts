@@ -11,7 +11,7 @@ export class DatabaseService implements OnModuleDestroy {
 
   public readonly db: NodeSQLiteDatabase<typeof relations>;
 
-  constructor(private readonly configService: ConfigService<Env>) {
+  constructor(private readonly configService: ConfigService<Env, true>) {
     const databaseFile = this.configService.get('DB_FILE_NAME', {
       infer: true,
     });

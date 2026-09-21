@@ -12,7 +12,8 @@ export const populateJobItem = sqliteTable(
   {
     jobId: integer('jobId')
       .$type<PopulateJobId>()
-      .references(() => populateJob.id),
+      .references(() => populateJob.id)
+      .notNull(),
     gameId: integer('gameId').$type<GameId>().notNull(),
     progressStatusId: integer('progressStatusId')
       .$type<ProgressStatusId>()
