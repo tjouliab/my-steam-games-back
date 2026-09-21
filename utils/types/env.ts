@@ -14,6 +14,7 @@ const parseStringList = z.preprocess((value) => {
 
 export const envSchema = z.object({
   PORT: z.coerce.number().default(3000),
+  FRONTEND_URL: z.url().default('http://localhost:4200'),
   STEAM_API_KEY: apiKeySchema,
 
   PLAYER_ID: playerIdSchema,

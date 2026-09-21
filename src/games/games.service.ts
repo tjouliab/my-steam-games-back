@@ -9,6 +9,7 @@ import { gameStatusEnum } from 'utils/enum/game-status.enum';
 import { VisibilityEnum } from 'utils/enum/visibility.enum';
 import { Env } from 'utils/types/env';
 import { PlayerId } from 'utils/types/player-id';
+import { GamesResponse } from './contracts/games.contract';
 import { GamesRepository } from './games.repository';
 
 @Injectable()
@@ -23,7 +24,7 @@ export class GamesService {
   ) {
     this.playerId = this.configService.get('PLAYER_ID', { infer: true });
   }
-  async get(): Promise<GameEntity[]> {
+  async get(): Promise<GamesResponse> {
     return this.gamesRepository.get();
   }
 
