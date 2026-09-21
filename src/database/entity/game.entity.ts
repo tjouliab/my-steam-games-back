@@ -1,7 +1,7 @@
 import { createSelectSchema } from 'drizzle-orm/zod';
-import { gameIdSchema } from 'utils/types/game-id';
-import { gameStatusIdSchema } from 'utils/types/game-status';
-import { visibilityIdSchema } from 'utils/types/visibility';
+import { gameIdSchema } from 'src/utils/types/game-id';
+import { gameStatusIdSchema } from 'src/utils/types/game-status';
+import { visibilityIdSchema } from 'src/utils/types/visibility';
 import z from 'zod';
 import { games } from '../schema';
 import { genreSchema } from './genre.entity';

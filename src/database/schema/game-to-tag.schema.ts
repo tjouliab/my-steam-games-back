@@ -1,6 +1,6 @@
 import { integer, primaryKey, sqliteTable } from 'drizzle-orm/sqlite-core';
-import { GameId } from 'utils/types/game-id';
-import { TagId } from 'utils/types/tag-id';
+import { GameId } from 'src/utils/types/game-id';
+import { TagId } from 'src/utils/types/tag-id';
 import { TableNames } from '../table-names';
 import { games } from './games.schema';
 import { tags } from './tags.schema';

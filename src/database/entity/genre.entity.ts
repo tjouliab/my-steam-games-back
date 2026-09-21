@@ -1,5 +1,5 @@
 import { createSelectSchema } from 'drizzle-orm/zod';
-import { genreIdSchema } from 'utils/types/genre-id';
+import { genreIdSchema } from 'src/utils/types/genre-id';
 import z from 'zod';
 import { genres } from '../schema';
 

@@ -2,7 +2,7 @@ import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 import {
   ProgressStatusId,
   ProgressStatusLabel,
-} from 'utils/types/progress-status';
+} from 'src/utils/types/progress-status';
 import { TableNames } from '../table-names';
 
 export const progressStatus = sqliteTable(TableNames.ProgressStatus, {

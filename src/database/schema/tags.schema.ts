@@ -1,5 +1,5 @@
 import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
-import { TagId } from 'utils/types/tag-id';
+import { TagId } from 'src/utils/types/tag-id';
 import { TableNames } from '../table-names';
 
 export const tags = sqliteTable(TableNames.Tags, {

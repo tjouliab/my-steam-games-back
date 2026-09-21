@@ -2,7 +2,7 @@ import { Injectable, OnModuleDestroy } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { drizzle, NodeSQLiteDatabase } from 'drizzle-orm/node-sqlite';
 import { DatabaseSync } from 'node:sqlite';
-import { Env } from 'utils/types/env';
+import { Env } from 'src/utils/types/env';
 import { relations } from './relations/relations';
 
 @Injectable()

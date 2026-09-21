@@ -1,5 +1,5 @@
 import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
-import { VisibilityId, VisibilityLabel } from 'utils/types/visibility';
+import { VisibilityId, VisibilityLabel } from 'src/utils/types/visibility';
 import { TableNames } from '../table-names';
 
 export const visibility = sqliteTable(TableNames.Visibility, {

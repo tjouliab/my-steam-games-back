@@ -1,7 +1,7 @@
 import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
-import { PopulateJobId } from 'utils/types/populate-job-id';
-import { ProgressStatusEnum } from '../../../utils/enum/progress-status.enum';
-import { ProgressStatusId } from '../../../utils/types/progress-status';
+import { ProgressStatusEnum } from 'src/utils/enum/progress-status.enum';
+import { PopulateJobId } from 'src/utils/types/populate-job-id';
+import { ProgressStatusId } from 'src/utils/types/progress-status';
 import { TableNames } from '../table-names';
 import { progressStatus } from './progress-status.schema';
 

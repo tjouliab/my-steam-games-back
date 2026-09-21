@@ -1,7 +1,7 @@
 import { createSelectSchema } from 'drizzle-orm/zod';
-import { gameIdSchema } from 'utils/types/game-id';
-import { populateJobIdSchema } from 'utils/types/populate-job-id';
-import { progressStatusIdSchema } from 'utils/types/progress-status';
+import { gameIdSchema } from 'src/utils/types/game-id';
+import { populateJobIdSchema } from 'src/utils/types/populate-job-id';
+import { progressStatusIdSchema } from 'src/utils/types/progress-status';
 import z from 'zod';
 import { populateJobItem } from '../schema/populate-job-item.schema';
 
