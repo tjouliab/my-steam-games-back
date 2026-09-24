@@ -18,4 +18,9 @@ export const visibilityLabelSchema = z.literal([
   VisibilityEnum.HiddenDefault.label,
 ]);
 
+export const visibilitySchema = z.object({
+  id: visibilityIdSchema,
+  label: visibilityLabelSchema,
+});
+
 export type VisibilityLabel = z.infer<typeof visibilityLabelSchema>;

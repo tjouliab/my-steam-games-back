@@ -20,4 +20,9 @@ export const gameStatusLabelSchema = z.literal([
   gameStatusEnum.Abandoned.label,
 ]);
 
+export const gameStatusSchema = z.object({
+  id: gameStatusIdSchema,
+  label: gameStatusLabelSchema,
+});
+
 export type GameStatusLabel = z.infer<typeof gameStatusLabelSchema>;
