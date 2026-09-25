@@ -52,7 +52,7 @@ export class GamesService {
     const gameEntity = gameSchema.parse({
       id: game.gameId,
       name: game.name,
-      imgIconUrl: game.imgIconUrl,
+      imgIconUrl: details.imgIconUrl,
       metacriticScore: details?.metacriticScore ?? null,
       positiveReviews: review.totalPositive,
       negativeReviews: review.totalNegative,

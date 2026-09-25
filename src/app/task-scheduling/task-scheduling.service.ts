@@ -43,7 +43,10 @@ export class TaskSchedulingService {
     try {
       await this.processPendingJobItems(pendingJobItems);
     } catch (err) {
-      console.error(`handleCron error: ${JSON.stringify(err, null, 2)}`);
+      console.error('handleCron error', {
+        jobId: pendingJob.id,
+        error: err,
+      });
       await this.populateJobService.setFailed(pendingJob);
       return;
     }
@@ -88,6 +91,13 @@ export class TaskSchedulingService {
       await this.populateJobItemService.setCompleted(jobItem);
       await this.populateJobService.updateCompletedGames(jobItem.jobId);
     } catch (err) {
+      console.error('handleJobItem error', {
+        jobId: jobItem.jobId,
+        gameId: jobItem.gameId,
+        attempts: jobItem.attempts,
+        error: err,
+      });
+
       if (
         axios.isAxiosError(err) &&
         (err.response?.status === 400 || err.response?.status === 500)

@@ -122,8 +122,12 @@ export class ApiSteamService {
       { params: { appids: gameId, cc: 'en', l: 'english' } },
     );
 
-    const parsedDataFr = gameDetailsReponseSchema.parse(dataFr)[gameId].data;
-    const parsedDataEn = gameDetailsReponseSchema.parse(dataEn)[gameId].data;
+    const parsedDataFr = Object.values(
+      gameDetailsReponseSchema.parse(dataFr),
+    )[0].data;
+    const parsedDataEn = Object.values(
+      gameDetailsReponseSchema.parse(dataEn),
+    )[0].data;
 
     return { ...parsedDataFr, releaseDate: parsedDataEn.releaseDate };
   }

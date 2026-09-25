@@ -90,7 +90,7 @@ describe('GamesService', () => {
     expect(gamesRepositoryMock.save).toHaveBeenCalledWith({
       id: game.gameId,
       name: game.name,
-      imgIconUrl: game.imgIconUrl,
+      imgIconUrl: details.imgIconUrl,
       metacriticScore: details.metacriticScore,
       positiveReviews: review.totalPositive,
       negativeReviews: review.totalNegative,

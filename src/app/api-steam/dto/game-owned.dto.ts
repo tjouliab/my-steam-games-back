@@ -6,14 +6,12 @@ const gameOwnedSchema = z
     appid: gameIdSchema,
     name: z.string(),
     playtime_forever: z.number().int().nonnegative(),
-    img_icon_url: z.string(),
     rtime_last_played: z.number().int().nullable().optional(),
   })
   .transform((game) => ({
     gameId: game.appid,
     name: game.name,
     playtimeForever: game.playtime_forever,
-    imgIconUrl: game.img_icon_url,
     rtimeLastPlayed: game.rtime_last_played ?? null,
   }));
 

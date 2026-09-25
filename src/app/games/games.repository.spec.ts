@@ -86,6 +86,20 @@ describe('GamesRepository', () => {
       genres: [actionGenre, strategyGenre],
     });
 
-    await expect(repository.get()).resolves.toEqual([savedGame]);
+    await expect(repository.get()).resolves.toEqual([
+      {
+        ...savedGame,
+        statusId: undefined,
+        status: {
+          id: gameStatusEnum.Completed.id,
+          label: gameStatusEnum.Completed.label,
+        },
+        visibilityId: undefined,
+        visibility: {
+          id: VisibilityEnum.Visible.id,
+          label: VisibilityEnum.Visible.label,
+        },
+      },
+    ]);
   });
 });

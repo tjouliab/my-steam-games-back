@@ -4,5 +4,6 @@ export const gameDetailsFixture: GameDetailsDto = {
   releaseDate: Temporal.PlainDate.from('2012-08-21T00:00:00.000'),
   metacriticScore: 88,
   genres: [],
+  imgIconUrl: 'icon',
   initialPrice: 1_499,
 };

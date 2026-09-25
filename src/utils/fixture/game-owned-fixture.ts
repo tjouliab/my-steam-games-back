@@ -5,6 +5,5 @@ export const gameOwnedFixture: GameOwnedDto = {
   gameId: gameIdSchema.parse(730),
   name: 'Counter-Strike 2',
   playtimeForever: 120,
-  imgIconUrl: 'icon',
   rtimeLastPlayed: 1_700_000_000,
 };

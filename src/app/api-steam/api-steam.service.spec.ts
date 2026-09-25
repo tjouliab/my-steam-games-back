@@ -138,6 +138,7 @@ describe('ApiSteamService', () => {
                     },
                   ],
                   price_overview: { initial: 0 },
+                  header_image: 'icon',
                 },
               },
             },
