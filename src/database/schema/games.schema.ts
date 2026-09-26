@@ -10,7 +10,7 @@ export const games = sqliteTable(TableNames.Games, {
   id: integer('id').$type<GameId>().primaryKey(),
   name: text('name').notNull(),
   imgIconUrl: text('imgIconUrl').notNull(),
-  backgroundUrl: text('backgroundUrl'),
+  backgroundUrl: text('backgroundUrl').notNull(),
   metacriticScore: integer('metacriticScore'),
   positiveReviews: integer('positiveReviews').notNull(),
   negativeReviews: integer('negativeReviews').notNull(),
