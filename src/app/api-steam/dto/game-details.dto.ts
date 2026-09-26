@@ -8,6 +8,7 @@ const gameDetailsSchema = z
     metacritic: z.object({ score: z.int() }).optional(),
     genres: z.array(genreSchema).default([]),
     header_image: z.string().nonempty(),
+    background: z.string().nonempty(),
     price_overview: z
       .object({ initial: z.int().nonnegative() })
       .default({ initial: 0 }),
@@ -17,6 +18,7 @@ const gameDetailsSchema = z
     metacriticScore: response?.metacritic?.score,
     genres: response.genres,
     imgIconUrl: response.header_image,
+    backgroundUrl: response.background,
     initialPrice: response.price_overview.initial,
   }));
 

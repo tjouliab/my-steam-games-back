@@ -91,6 +91,7 @@ describe('GamesService', () => {
       id: game.gameId,
       name: game.name,
       imgIconUrl: details.imgIconUrl,
+      backgroundUrl: details.backgroundUrl,
       metacriticScore: details.metacriticScore,
       positiveReviews: review.totalPositive,
       negativeReviews: review.totalNegative,

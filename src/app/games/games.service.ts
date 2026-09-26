@@ -53,6 +53,7 @@ export class GamesService {
       id: game.gameId,
       name: game.name,
       imgIconUrl: details.imgIconUrl,
+      backgroundUrl: details.backgroundUrl,
       metacriticScore: details?.metacriticScore ?? null,
       positiveReviews: review.totalPositive,
       negativeReviews: review.totalNegative,

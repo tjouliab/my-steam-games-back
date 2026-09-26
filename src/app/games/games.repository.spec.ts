@@ -23,6 +23,7 @@ describe('GamesRepository', () => {
     id: gameIdSchema.parse(730),
     name: 'Counter-Strike 2',
     imgIconUrl: 'icon',
+    backgroundUrl: 'background',
     metacriticScore: 88,
     positiveReviews: 90,
     negativeReviews: 10,

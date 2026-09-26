@@ -62,8 +62,9 @@ export class GamesRepository {
           negativeReviews: newGame.negativeReviews,
           playTime: newGame.playTime,
           lastTimePlayed: newGame.lastTimePlayed,
-          // Keep track of last icon updates
+          // Keep track of last img updates
           imgIconUrl: newGame.imgIconUrl,
+          backgroundUrl: newGame.backgroundUrl,
 
           // Update visibility only if set manually
           ...(newGame.visibilityId !== VisibilityEnum.HiddenDefault.id && {

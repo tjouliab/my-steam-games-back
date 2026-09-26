@@ -5,5 +5,6 @@ export const gameDetailsFixture: GameDetailsDto = {
   metacriticScore: 88,
   genres: [],
   imgIconUrl: 'icon',
+  backgroundUrl: 'background',
   initialPrice: 1_499,
 };
