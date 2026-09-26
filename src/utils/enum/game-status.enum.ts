@@ -1,6 +1,6 @@
 import type { GameStatusId } from '../types/game-status';
 
-export const gameStatusEnum = {
+export const GameStatusEnum = {
   Completed: {
     id: 1 as GameStatusId,
     label: '100%',

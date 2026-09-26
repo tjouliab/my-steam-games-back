@@ -5,15 +5,15 @@ import { GameDetailsDto } from 'src/app/api-steam/dto/game-details.dto';
 import { GameOwnedDto } from 'src/app/api-steam/dto/game-owned.dto';
 import { GameReviewDto } from 'src/app/api-steam/dto/game-reviews.dto';
 import { PlayerAchievementDto } from 'src/app/api-steam/dto/player-achievements.dto';
-import { gameStatusEnum } from 'src/utils/enum/game-status.enum';
+import { GameStatusEnum } from 'src/utils/enum/game-status.enum';
 import { VisibilityEnum } from 'src/utils/enum/visibility.enum';
 import { gameDetailsFixture } from 'src/utils/fixture/game-details-fixture';
 import { gameOwnedFixture } from 'src/utils/fixture/game-owned-fixture';
 import { gameReviewFixture } from 'src/utils/fixture/game-review-fixture';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { PopulateJobService } from '../populate-job/populate-job.service';
 import { GamesRepository } from './games.repository';
 import { GamesService } from './games.service';
-import { PopulateJobService } from '../populate-job/populate-job.service';
 
 describe('GamesService', () => {
   const game: GameOwnedDto = { ...gameOwnedFixture };
@@ -101,7 +101,7 @@ describe('GamesService', () => {
       personnalScore: null,
       personnalNotes: null,
       visibilityId: VisibilityEnum.Visible.id,
-      statusId: gameStatusEnum.Completed.id,
+      statusId: GameStatusEnum.Completed.id,
       createdAt: expect.any(String),
       updatedAt: expect.any(String),
       genres: details.genres,

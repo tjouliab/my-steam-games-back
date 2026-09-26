@@ -7,7 +7,7 @@ import { GameEntity } from 'src/database/entity/game.entity';
 import { GenreEntity } from 'src/database/entity/genre.entity';
 import { relations } from 'src/database/relations/relations';
 import { gameToGenre, genres } from 'src/database/schema';
-import { gameStatusEnum } from 'src/utils/enum/game-status.enum';
+import { GameStatusEnum } from 'src/utils/enum/game-status.enum';
 import { VisibilityEnum } from 'src/utils/enum/visibility.enum';
 import { gameIdSchema } from 'src/utils/types/game-id';
 import { genreIdSchema } from 'src/utils/types/genre-id';
@@ -33,7 +33,7 @@ describe('GamesRepository', () => {
     personnalScore: null,
     personnalNotes: null,
     visibilityId: VisibilityEnum.Visible.id,
-    statusId: gameStatusEnum.Completed.id,
+    statusId: GameStatusEnum.Completed.id,
     createdAt: '2026-09-20T00:00:00Z',
     updatedAt: '2026-09-20T00:00:00Z',
     genres: [],
@@ -91,8 +91,8 @@ describe('GamesRepository', () => {
         ...savedGame,
         statusId: undefined,
         status: {
-          id: gameStatusEnum.Completed.id,
-          label: gameStatusEnum.Completed.label,
+          id: GameStatusEnum.Completed.id,
+          label: GameStatusEnum.Completed.label,
         },
         visibilityId: undefined,
         visibility: {

@@ -4,7 +4,7 @@ import { ApiSteamService } from 'src/app/api-steam/api-steam.service';
 import { GameOwnedDto } from 'src/app/api-steam/dto/game-owned.dto';
 import { GameEntity, gameSchema } from 'src/database/entity/game.entity';
 import { DateUtils } from 'src/utils/date.utils';
-import { gameStatusEnum } from 'src/utils/enum/game-status.enum';
+import { GameStatusEnum } from 'src/utils/enum/game-status.enum';
 import { VisibilityEnum } from 'src/utils/enum/visibility.enum';
 import { Env } from 'src/utils/types/env';
 import { PlayerId } from 'src/utils/types/player-id';
@@ -66,7 +66,7 @@ export class GamesService {
         game.playtimeForever > 0
           ? VisibilityEnum.Visible.id
           : VisibilityEnum.HiddenDefault.id,
-      statusId: isCompleted ? gameStatusEnum.Completed.id : null,
+      statusId: isCompleted ? GameStatusEnum.Completed.id : null,
       createdAt: now,
       updatedAt: now,
       genres: details.genres,
