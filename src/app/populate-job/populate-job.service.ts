@@ -42,6 +42,13 @@ export class PopulateJobService {
   }
 
   async setRunning(job: PopulateJobEntity): Promise<void> {
+    if (job.startAt == null) {
+      await this.populateJobRepository.setStartAt(
+        job.id,
+        Temporal.Now.instant(),
+      );
+    }
+
     return this.setStatus(job, ProgressStatusEnum.Running.id);
   }
   async setCompleted(job: PopulateJobEntity): Promise<void> {
