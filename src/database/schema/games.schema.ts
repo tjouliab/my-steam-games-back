@@ -1,7 +1,7 @@
 import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
-import { GameId } from 'src/utils/types/game-id';
-import { GameStatusId } from 'src/utils/types/game-status';
-import { VisibilityId } from 'src/utils/types/visibility';
+import { GameId } from '../../utils/types/game-id';
+import { GameStatusId } from '../../utils/types/game-status';
+import { VisibilityId } from '../../utils/types/visibility';
 import { TableNames } from '../table-names';
 import { gameStatus } from './game-status.schema';
 import { visibility } from './visibility.schema';
@@ -10,6 +10,7 @@ export const games = sqliteTable(TableNames.Games, {
   id: integer('id').$type<GameId>().primaryKey(),
   name: text('name').notNull(),
   imgIconUrl: text('imgIconUrl').notNull(),
+  backgroundUrl: text('backgroundUrl').notNull(),
   metacriticScore: integer('metacriticScore'),
   positiveReviews: integer('positiveReviews').notNull(),
   negativeReviews: integer('negativeReviews').notNull(),
