@@ -98,10 +98,7 @@ export class TaskSchedulingService {
         error: err,
       });
 
-      if (
-        axios.isAxiosError(err) &&
-        (err.response?.status === 400 || err.response?.status === 500)
-      ) {
+      if (axios.isAxiosError(err) && err.response?.status === 500) {
         await this.populateJobItemService.setCanceled(jobItem);
         return;
       }

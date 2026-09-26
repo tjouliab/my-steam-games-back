@@ -1,6 +1,7 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import axios from 'axios';
 import { ApiKey } from 'src/utils/types/api-key';
 import { Env } from 'src/utils/types/env';
 import { GameId } from 'src/utils/types/game-id';
@@ -103,12 +104,24 @@ export class ApiSteamService {
     playerId: PlayerId,
     gameId: GameId,
   ): Promise<PlayerAchievementDto[]> {
-    const { data } = await this.httpService.axiosRef.get(
-      `${this.apiUrl}/ISteamUserStats/GetPlayerAchievements/v0001/`,
-      { params: { key: this.apiKey, steamid: playerId, appid: gameId } },
-    );
+    try {
+      const { data } = await this.httpService.axiosRef.get(
+        `${this.apiUrl}/ISteamUserStats/GetPlayerAchievements/v0001/`,
+        { params: { key: this.apiKey, steamid: playerId, appid: gameId } },
+      );
 
-    return playerAchievementsResponseSchema.parse(data).achievements ?? [];
+      return playerAchievementsResponseSchema.parse(data).achievements ?? [];
+    } catch (error) {
+      if (
+        axios.isAxiosError(error) &&
+        error.response?.status === 400 &&
+        error.response.data?.playerstats?.error === 'Requested app has no stats'
+      ) {
+        return [];
+      }
+
+      throw error;
+    }
   }
 
   private async getGameDetails(gameId: GameId): Promise<GameDetailsDto> {

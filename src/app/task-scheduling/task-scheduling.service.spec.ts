@@ -36,7 +36,7 @@ describe('TaskSchedulingService', () => {
   };
   const populateJobServiceMock = {
     getPendingOrFailed: vi.fn(),
-    incrementCompletedGames: vi.fn(),
+    updateCompletedGames: vi.fn(),
     setRunning: vi.fn(),
     setCompleted: vi.fn(),
     setFailed: vi.fn(),
@@ -54,6 +54,8 @@ describe('TaskSchedulingService', () => {
 
   let service: TaskSchedulingService;
   beforeEach(async () => {
+    gamesServiceMock.saveEnrichedGame.mockResolvedValue(undefined);
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         TaskSchedulingService,
@@ -133,22 +135,18 @@ describe('TaskSchedulingService', () => {
     expect(populateJobServiceMock.setFailed).not.toHaveBeenCalled();
   });
 
-  it('should cancel an item when Steam rejects its achievements request', async () => {
+  it('should complete a job when Steam rejects its achievements request', async () => {
     const item = createJobItem();
     populateJobServiceMock.getPendingOrFailed.mockResolvedValue(job);
     populateJobItemServiceMock.getPendingOrFailedById.mockResolvedValue([item]);
     apiSteamServiceMock.getFamilyOwnedGamesMap.mockResolvedValue(
       new Map([[game.gameId, game]]),
     );
-    gamesServiceMock.saveEnrichedGame.mockRejectedValue({
-      isAxiosError: true,
-      response: { status: 400 },
-    });
 
     await service.handleCron();
 
-    expect(populateJobItemServiceMock.setCanceled).toHaveBeenCalledWith(item);
-    expect(populateJobItemServiceMock.setFailed).not.toHaveBeenCalled();
+    expect(populateJobItemServiceMock.setCanceled).not.toHaveBeenCalled();
+    expect(populateJobItemServiceMock.setCompleted).toHaveBeenCalled();
     expect(populateJobServiceMock.setCompleted).toHaveBeenCalledWith(job);
     expect(populateJobServiceMock.setFailed).not.toHaveBeenCalledWith(job);
   });

@@ -200,5 +200,59 @@ describe('ApiSteamService', () => {
         },
       );
     });
+
+    it('should return no achievements when Steam reports that a game has no stats', async () => {
+      httpServiceMock.axiosRef.get.mockImplementation((url) => {
+        if (url.includes('GetPlayerAchievements')) {
+          return Promise.reject({
+            isAxiosError: true,
+            response: {
+              status: 400,
+              data: {
+                playerstats: {
+                  error: 'Requested app has no stats',
+                  success: false,
+                },
+              },
+            },
+          });
+        }
+
+        if (url.endsWith('/api/appdetails')) {
+          return Promise.resolve({
+            data: {
+              [gameId]: {
+                success: true,
+                data: {
+                  release_date: { date: '7 Aug, 2007' },
+                  genres: [],
+                  price_overview: { initial: 0 },
+                  header_image: 'icon',
+                  background: 'background',
+                },
+              },
+            },
+          });
+        }
+
+        return Promise.resolve({
+          data: {
+            success: 1,
+            query_summary: {
+              num_reviews: 0,
+              review_score: 0,
+              review_score_desc: '',
+              total_positive: 0,
+              total_negative: 0,
+              total_reviews: 0,
+            },
+          },
+        });
+      });
+
+      await expect(service.getFullGameInfo(gameId)).resolves.toMatchObject({
+        achievements: [],
+      });
+    });
   });
 });
