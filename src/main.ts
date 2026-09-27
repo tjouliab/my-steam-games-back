@@ -1,11 +1,15 @@
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import 'dotenv/config';
 import { Env } from 'src/utils/types/env';
 import { AppModule } from './app/app.module';
+import { ObserveInstrument } from './app/observe';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    instrument: ObserveInstrument,
+  });
   const configService = app.get(ConfigService<Env, true>);
 
   app.enableCors({
