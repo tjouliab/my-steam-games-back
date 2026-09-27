@@ -10,6 +10,7 @@ import { PopulateJobItemModule } from './populate-job-item/populate-job-item.mod
 import { PopulateJobModule } from './populate-job/populate-job.module';
 import { TaskSchedulingModule } from './task-scheduling/task-scheduling.module';
 import { ObserveModule } from './observe';
+import { GameStatusModule } from './game-status/game-status.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { ObserveModule } from './observe';
     PopulateJobModule,
     PopulateJobItemModule,
     TaskSchedulingModule,
+    GameStatusModule,
   ],
   providers: [AppService],
 })
