@@ -1,15 +1,17 @@
 import { createSelectSchema } from 'drizzle-orm/zod';
 import { gameIdSchema } from 'src/utils/types/game-id';
 import { gameStatusIdSchema } from 'src/utils/types/game-status';
+import { personnalScoreSchema } from 'src/utils/types/personnal-score';
 import { visibilityIdSchema } from 'src/utils/types/visibility';
 import z from 'zod';
 import { games } from '../schema';
 import { genreSchema } from './genre.entity';
 
-const gameRecordSchema = createSelectSchema(games, {
+export const gameRecordSchema = createSelectSchema(games, {
   id: gameIdSchema,
   visibilityId: visibilityIdSchema,
   statusId: gameStatusIdSchema.nullable(),
+  personnalScore: personnalScoreSchema.nullable(),
 });
 
 export const gameSchema = gameRecordSchema.extend({
