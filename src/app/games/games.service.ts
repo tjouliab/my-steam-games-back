@@ -9,6 +9,7 @@ import { VisibilityEnum } from 'src/utils/enum/visibility.enum';
 import { Env } from 'src/utils/types/env';
 import { PlayerId } from 'src/utils/types/player-id';
 import { PopulateJobService } from '../populate-job/populate-job.service';
+import { GameEditBody, gameEditSchema } from './contracts/game-edit.contract';
 import { GamesResponse } from './contracts/games.contract';
 import { GamesRepository } from './games.repository';
 
@@ -35,6 +36,11 @@ export class GamesService {
 
     const gameIds = ownedGames.map((g) => g.gameId);
     await this.populateJobService.registerGames(gameIds);
+  }
+
+  async editOne(body: GameEditBody): Promise<void> {
+    const parsedBody = gameEditSchema.parse(body);
+    return this.gamesRepository.editOne(parsedBody);
   }
 
   async saveEnrichedGame(game: GameOwnedDto): Promise<void> {

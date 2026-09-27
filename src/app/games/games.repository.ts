@@ -1,7 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { eq, sql } from 'drizzle-orm';
 import { DatabaseService } from 'src/database/database.service';
-import { GameEntity, GameRecord } from 'src/database/entity/game.entity';
+import {
+  GameEntity,
+  GameRecord,
+  gameRecordSchema,
+} from 'src/database/entity/game.entity';
 import { GenreEntity } from 'src/database/entity/genre.entity';
 import { games, gameToGenre, genres } from 'src/database/schema';
 import { DateUtils } from 'src/utils/date.utils';
@@ -9,6 +13,7 @@ import { VisibilityEnum } from 'src/utils/enum/visibility.enum';
 import { DatabaseExecutor } from 'src/utils/types/database-executor';
 import { GameId } from 'src/utils/types/game-id';
 import { GenreId } from 'src/utils/types/genre-id';
+import { GameEdit } from './contracts/game-edit.contract';
 import { GamesResponse, gamesResponseSchema } from './contracts/games.contract';
 
 @Injectable()
@@ -25,6 +30,14 @@ export class GamesRepository {
     });
 
     return gamesResponseSchema.parse(gameEntities);
+  }
+
+  async editOne(edit: GameEdit): Promise<void> {
+    await this.databaseService.db.update(games).set({
+      personnalScore: edit.personnalScore,
+      personnalNotes: edit.personnalNotes,
+      statusId: edit.statusId,
+    });
   }
 
   save(game: GameEntity): GameEntity {
@@ -82,7 +95,7 @@ export class GamesRepository {
       .returning()
       .get();
 
-    return insertedGame;
+    return gameRecordSchema.parse(insertedGame);
   }
 
   private upsertGenres(gameGenres: GenreEntity[], db: DatabaseExecutor): void {
