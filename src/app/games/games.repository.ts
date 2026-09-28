@@ -33,11 +33,14 @@ export class GamesRepository {
   }
 
   async editOne(edit: GameEdit): Promise<void> {
-    await this.databaseService.db.update(games).set({
-      personnalScore: edit.personnalScore,
-      personnalNotes: edit.personnalNotes,
-      statusId: edit.statusId,
-    });
+    await this.databaseService.db
+      .update(games)
+      .set({
+        personnalScore: edit.personnalScore,
+        personnalNotes: edit.personnalNotes,
+        statusId: edit.statusId,
+      })
+      .where(eq(games.id, edit.id));
   }
 
   save(game: GameEntity): GameEntity {
