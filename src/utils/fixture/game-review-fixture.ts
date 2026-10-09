@@ -1,4 +1,4 @@
-import { GameReviewDto } from "src/app/api-steam/dto/game-reviews.dto";
+import { GameReviewDto } from 'src/app/api-steam/dto/game-reviews.dto';
 
 export const gameReviewFixture: GameReviewDto = {
   reviewCount: 100,
