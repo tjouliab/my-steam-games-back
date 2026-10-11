@@ -162,6 +162,9 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+patchedDependencies:
+  '@nestia/sdk@11.3.4': b637e098601de7452aadd82f13a4648415eb683a488b8578efe6a14e03ecf439
+
 importers:
 
   .:
@@ -177,7 +180,7 @@ importers:
         version: 11.3.4
       '@nestia/sdk':
         specifier: 11.3.4
-        version: 11.3.4(@nestia/core@11.3.4(@nestia/fetcher@11.3.4)(@nestjs/common@12.0.1(reflect-metadata@0.1.14)(rxjs@7.8.2)(supports-color@8.1.1))(@nestjs/core@12.0.1)(reflect-metadata@0.1.14)(rxjs@7.8.2)(typia@12.1.1(@types/node@26.5.1)(typescript@6.0.3)))(@types/node@26.5.1)(typescript@6.0.3)
+        version: 11.3.4(patch_hash=b637e098601de7452aadd82f13a4648415eb683a488b8578efe6a14e03ecf439)(@nestia/core@11.3.4(@nestia/fetcher@11.3.4)(@nestjs/common@12.0.1(reflect-metadata@0.1.14)(rxjs@7.8.2)(supports-color@8.1.1))(@nestjs/core@12.0.1)(reflect-metadata@0.1.14)(rxjs@7.8.2)(typia@12.1.1(@types/node@26.5.1)(typescript@6.0.3)))(@types/node@26.5.1)(typescript@6.0.3)
       '@nestjs/axios':
         specifier: ^12.0.0
         version: 12.0.0(@nestjs/common@12.0.1(reflect-metadata@0.1.14)(rxjs@7.8.2)(supports-color@8.1.1))(axios@1.20.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1))(rxjs@7.8.2)
@@ -4220,7 +4223,7 @@ snapshots:
       '@typia/interface': 12.2.1
       '@typia/utils': 12.2.1
 
-  '@nestia/sdk@11.3.4(@nestia/core@11.3.4(@nestia/fetcher@11.3.4)(@nestjs/common@12.0.1(reflect-metadata@0.1.14)(rxjs@7.8.2)(supports-color@8.1.1))(@nestjs/core@12.0.1)(reflect-metadata@0.1.14)(rxjs@7.8.2)(typia@12.1.1(@types/node@26.5.1)(typescript@6.0.3)))(@types/node@26.5.1)(typescript@6.0.3)':
+  '@nestia/sdk@11.3.4(patch_hash=b637e098601de7452aadd82f13a4648415eb683a488b8578efe6a14e03ecf439)(@nestia/core@11.3.4(@nestia/fetcher@11.3.4)(@nestjs/common@12.0.1(reflect-metadata@0.1.14)(rxjs@7.8.2)(supports-color@8.1.1))(@nestjs/core@12.0.1)(reflect-metadata@0.1.14)(rxjs@7.8.2)(typia@12.1.1(@types/node@26.5.1)(typescript@6.0.3)))(@types/node@26.5.1)(typescript@6.0.3)':
     dependencies:
       '@nestia/core': 11.3.4(@nestia/fetcher@11.3.4)(@nestjs/common@12.0.1(reflect-metadata@0.1.14)(rxjs@7.8.2)(supports-color@8.1.1))(@nestjs/core@12.0.1)(reflect-metadata@0.1.14)(rxjs@7.8.2)(typia@12.1.1(@types/node@26.5.1)(typescript@6.0.3))
       '@nestia/fetcher': 11.3.4

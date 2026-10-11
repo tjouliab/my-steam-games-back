@@ -1,0 +1,97 @@
+
+name: Publish SDK
+
+on:
+  workflow_dispatch:
+    inputs:
+      release:
+        description: "Version bump"
+        required: true
+        type: choice
+        default: patch
+        options:
+          - patch
+          - minor
+          - major
+
+permissions:
+  contents: read
+
+concurrency:
+  group: publish-sdk
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    name: Build & Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6
+
+      - name: Setup Node
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: package.json
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: pnpm build
+
+      - name: Test
+        run: pnpm test
+
+  publish:
+    name: Publish SDK
+    needs: validate
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6
+
+      - name: Setup Node
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: package.json
+          cache: pnpm
+          registry-url: https://npm.pkg.github.com
+          scope: "@tjouliab"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate SDK
+        run: pnpm exec nestia sdk
+
+      - name: Install SDK dependencies
+        working-directory: packages/sdk
+        run: npm ci
+
+      - name: Compile SDK
+        working-directory: packages/sdk
+        run: npm run compile
+
+      - name: Bump SDK version
+        working-directory: packages/sdk
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.SDK_PUBLISH_TOKEN }}
+          RELEASE_TYPE: ${{ inputs.release }}
+        run: |
+          CURRENT=$(npm view @tjouliab/my-steam-games-sdk version --registry=https://npm.pkg.github.com)
+          npm version "$CURRENT" --no-git-tag-version --allow-same-version
+          npm version "$RELEASE_TYPE" --no-git-tag-version
+
+      - name: Publish SDK
+        working-directory: packages/sdk
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.SDK_PUBLISH_TOKEN }}
+        run: npm publish
