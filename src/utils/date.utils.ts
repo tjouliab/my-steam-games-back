@@ -2,7 +2,7 @@ export abstract class DateUtils {
   static parseSteamDate(value: string): Temporal.PlainDate {
     const date = new Date(`${value} UTC`);
 
-    if (Number.isNaN(date.getTime())) return Temporal.Now.plainDateISO();
+    if (Number.isNaN(date.getTime())) return Temporal.Now.plainDateISO('UTC');
 
     return Temporal.PlainDate.from({
       year: date.getUTCFullYear(),

@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { DateUtils } from './date.utils';
 
 describe('parseSteamDate', () => {
@@ -13,10 +13,14 @@ describe('parseSteamDate', () => {
 describe('now', () => {
   beforeEach(() => {
     vi.useFakeTimers();
-    vi.setSystemTime(new Date(2028, 3, 14, 10, 30, 25, 123));
+    vi.setSystemTime(new Date('2028-04-14T10:30:25.123+02:00'));
   });
 
-  it('mocks Temporal.Now correctly', () => {
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it('returns the current instant in UTC', () => {
     const now = DateUtils.now();
     expect(now).toEqual('2028-04-14T08:30:25Z');
   });
