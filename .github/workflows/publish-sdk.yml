@@ -73,7 +73,7 @@ jobs:
         run: pnpm exec ts-patch install
 
       - name: Generate SDK
-        run: mkdir -p packages/sdk && pnpm exec nestia sdk
+        run: pnpm exec nestia sdk
 
       - name: Install SDK dependencies
         working-directory: packages/sdk

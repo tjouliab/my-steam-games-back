@@ -1,0 +1,38 @@
+{
+  "name": "@tjouliab/my-steam-games-sdk",
+  "version": "0.1.1",
+  "description": "TypeScript SDK for MySteamGames",
+  "private": false,
+  "main": "lib/index.js",
+  "typings": "lib/index.d.ts",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tjouliab/my-steam-games-back.git"
+  },
+  "scripts": {
+    "build": "npm run build:sdk && npm run compile",
+    "build:sdk": "rimraf ../../sdk/functional && cd ../.. && npx nestia sdk && cd packages/sdk",
+    "compile": "rimraf lib && tsc",
+    "deploy": "npm run build && npm publish",
+    "prepare": "ts-patch install"
+  },
+  "author": "tjouliab",
+  "license": "UNLICENSED",
+  "files": [
+    "lib",
+    "package.json",
+    "README.md"
+  ],
+  "devDependencies": {
+    "rimraf": "^6.1.3",
+    "ts-patch": "^4.0.1",
+    "typescript": "~6.0.3"
+  },
+  "dependencies": {
+    "@nestia/fetcher": "^11.3.4",
+    "typia": "^12.1.0"
+  }
+}
