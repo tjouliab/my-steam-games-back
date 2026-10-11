@@ -2,9 +2,13 @@
   "name": "my-steam-games-back",
   "version": "0.0.1",
   "description": "",
-  "author": "",
+  "author": "tjouliab",
   "private": true,
+  "packageManager": "pnpm@12.4.1",
   "license": "UNLICENSED",
+  "engines": {
+    "node": "26.8.2"
+  },
   "scripts": {
     "build": "nest build",
     "format": "prettier --check \"src/**/*.ts\"",
