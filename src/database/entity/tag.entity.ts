@@ -3,7 +3,7 @@ import { tagIdSchema } from 'src/utils/types/tag-id';
 import z from 'zod';
 import { tags } from '../schema';
 
-const tagSchema = createSelectSchema(tags, {
+export const tagSchema = createSelectSchema(tags, {
   id: tagIdSchema,
 });
 

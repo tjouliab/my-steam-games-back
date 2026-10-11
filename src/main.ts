@@ -6,7 +6,7 @@ import { Env } from 'src/utils/types/env';
 import { AppModule } from './app/app.module';
 import { ObserveInstrument } from './app/observe';
 
-async function bootstrap() {
+async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule, {
     instrument: ObserveInstrument,
   });

@@ -27,7 +27,7 @@ export class DatabaseService implements OnModuleDestroy {
     });
   }
 
-  onModuleDestroy() {
+  onModuleDestroy(): void {
     this.sqlite.close();
   }
 }

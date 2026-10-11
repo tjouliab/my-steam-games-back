@@ -4,7 +4,7 @@ import { progressStatusIdSchema } from 'src/utils/types/progress-status';
 import z from 'zod';
 import { populateJob } from '../schema/populate-job.schema';
 
-const populateJobSchema = createSelectSchema(populateJob, {
+export const populateJobSchema = createSelectSchema(populateJob, {
   id: populateJobIdSchema,
   progressStatusId: progressStatusIdSchema,
 });
