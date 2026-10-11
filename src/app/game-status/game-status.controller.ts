@@ -1,7 +1,7 @@
 import { TypedRoute } from '@nestia/core';
 import { Controller } from '@nestjs/common';
-import { GameStatusResponse } from 'sdk/structures/GameStatusResponse';
 import { GameStatusService } from './game-status.service';
+import { GameStatusResponse } from './contracts/game-status.contract';
 
 @Controller('game-status')
 export class GameStatusController {

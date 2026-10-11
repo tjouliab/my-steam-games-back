@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { GameStatusResponse } from 'sdk/structures/GameStatusResponse';
 import { GameStatusEnum } from 'src/utils/enum/game-status.enum';
+import { GameStatusResponse } from './contracts/game-status.contract';
 
 @Injectable()
 export class GameStatusService {
