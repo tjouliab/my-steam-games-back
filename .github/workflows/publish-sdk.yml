@@ -69,6 +69,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Configure TypeScript transformers
+        run: pnpm exec ts-patch install
+
       - name: Generate SDK
         run: pnpm exec nestia sdk
 
