@@ -4,7 +4,7 @@ export default {
   input: {
     include: ['src/**/*.controller.ts'],
   },
-  output: 'sdk',
+  output: 'packages/sdk/src',
   distribute: 'packages/sdk',
   clone: true,
   primitive: false,

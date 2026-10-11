@@ -1,7 +1,7 @@
 # compiled output
 /dist
 /node_modules
-/sdk
+/packages/*/src
 /packages/*/node_modules
 /packages/*/lib
 

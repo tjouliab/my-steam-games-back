@@ -17,7 +17,7 @@
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/src/main.js",
     "prepare": "husky",
-    "sdk:build": "nestia sdk",
+    "sdk:build": "pnpm --dir packages/sdk run build",
     "lint": "eslint \"src/**/*.ts\"",
     "test": "vitest run",
     "test:watch": "vitest",
